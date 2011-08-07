@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{56B72C76-9670-4339-AF4D-17A464A45448}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GenerateAdminPage</RootNamespace>
+    <AssemblyName>GenerateAdminPage</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft SQL Server\100\SDK\Assemblies\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Management.Sdk.Sfc, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft SQL Server\100\SDK\Assemblies\Microsoft.SqlServer.Management.Sdk.Sfc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Smo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Microsoft SQL Server\100\SDK\Assemblies\Microsoft.SqlServer.Smo.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\Base\AdminCore.cs" />
+    <Compile Include="Classes\Base\BaseGenerate.cs" />
+    <Compile Include="Classes\Base\Utils.cs" />
+    <Compile Include="Classes\Controllers\AdminController.cs" />
+    <Compile Include="Classes\Controllers\AdminModelsController.cs" />
+    <Compile Include="Classes\Controllers\AdminModelsControllerWithImage.cs" />
+    <Compile Include="Classes\Controllers\AdminModelsControllerWithoutImage.cs" />
+    <Compile Include="Classes\Controllers\BaseController.cs" />
+    <Compile Include="Classes\Controllers\DataTransferViewModel.cs" />
+    <Compile Include="Classes\Controllers\IAdminController.cs" />
+    <Compile Include="Classes\Controllers\IAdminControllerWithImage.cs" />
+    <Compile Include="Classes\Controllers\IAdminControllerWithoutImage.cs" />
+    <Compile Include="Classes\Controllers\AdminNguoiDungController.cs" />
+    <Compile Include="Classes\DataTransfer\AdminDataContext.cs" />
+    <Compile Include="Classes\DBStructure\Attribute.cs" />
+    <Compile Include="Classes\Base\ClassGenerate.cs" />
+    <Compile Include="Classes\DBStructure\DataBase.cs" />
+    <Compile Include="Classes\DataTransfer\DataContext.cs" />
+    <Compile Include="Classes\DataTransfer\DataTextProvider.cs" />
+    <Compile Include="Classes\DataTransfer\DBProvider.cs" />
+    <Compile Include="Classes\DataTransfer\GlobalVariables.cs" />
+    <Compile Include="Classes\Models\GroupViewModel.cs" />
+    <Compile Include="Classes\Models\IBaseModel.cs" />
+    <Compile Include="Classes\Models\IRepository.cs" />
+    <Compile Include="Classes\Models\IViewModel.cs" />
+    <Compile Include="Classes\Models\NguoiDungRepository.cs" />
+    <Compile Include="Classes\Models\NguoiDungViewModel.cs" />
+    <Compile Include="Classes\Models\Repository.cs" />
+    <Compile Include="Classes\DBStructure\Table.cs" />
+    <Compile Include="Classes\Models\ViewModel.cs" />
+    <Compile Include="Classes\Views\IView.cs" />
+    <Compile Include="Classes\Views\ValidateScript.cs" />
+    <Compile Include="Classes\Views\ViewNguoiDung.cs" />
+    <Compile Include="Classes\Views\ViewNotNguoiDung.cs" />
+    <Compile Include="Classes\Views\Views.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Input\DB.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Output\Controllers\trash.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Output\Models\Repositories\trash.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Output\Models\ViewModels\trash.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Output\Scripts\trash.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Output\Views\Admin\Templates\trash.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
