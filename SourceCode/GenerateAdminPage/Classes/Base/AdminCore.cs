@@ -78,6 +78,10 @@ namespace GenerateAdminPage.Classes
                         _rep = new ValidateScript();
                         _rep.InitView(DB, DB.Tables[i]);
                         result += _rep.GenerateView(EnumView.SELECT) + Environment.NewLine;
+
+                        result += _rep.GenerateValidateNguoiDung() + Environment.NewLine;
+                        path = DataContext.Instance.DataTextProvider.OutputValidateScriptPath + "ValidationInputs.js";
+                        DataContext.Instance.DataTextProvider.WriteData(result, path);
                     }
                 }
                 else if (DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
@@ -85,9 +89,6 @@ namespace GenerateAdminPage.Classes
                     nguoiDung = DB.Tables[i];
                 }
             }
-            result += _rep.GenerateValidateNguoiDung() + Environment.NewLine;
-            path = DataContext.Instance.DataTextProvider.OutputValidateScriptPath + "ValidationInputs.js";
-            DataContext.Instance.DataTextProvider.WriteData(result, path);
         }
         public void GenerateViews(DataBase DB)
         {
@@ -299,6 +300,7 @@ namespace GenerateAdminPage.Classes
             var viewmodelPath = DataContext.Instance.DataTextProvider.OutputViewModelsPath + "\\trash.xml";
             var repPath = DataContext.Instance.DataTextProvider.OutputRepositoriesPath + "\\trash.xml";
             var scriptPath = DataContext.Instance.DataTextProvider.OutputValidateScriptPath + "\\trash.xml";
+            var viewPath = DataContext.Instance.DataTextProvider.OutputViewsPath + "\\Templates\\trash.xml";
 
             if (System.IO.File.Exists(controllerPath))
             {
@@ -344,6 +346,19 @@ namespace GenerateAdminPage.Classes
                 try
                 {
                     System.IO.File.Delete(scriptPath);
+                }
+                catch (System.IO.IOException e)
+                {
+                    Console.WriteLine(e.Message);
+                    return;
+                }
+            }
+
+            if (System.IO.File.Exists(viewPath))
+            {
+                try
+                {
+                    System.IO.File.Delete(viewPath);
                 }
                 catch (System.IO.IOException e)
                 {

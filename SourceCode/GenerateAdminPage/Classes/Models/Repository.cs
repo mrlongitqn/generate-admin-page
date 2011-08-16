@@ -94,7 +94,7 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
             var idFK = FK.Name.ToLower();
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "> SelectBy" + FK.Name.Substring(2) + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page, int pageSize)" + END;
+            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "> SelectBy" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page, int pageSize)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "var lstItem = (from item in DataContext.Instance." + Utils.BuildModelName(_db, _table, GlobalVariables.g_ModelName) + " where item." + FK.Name + " == " + idFK + " select item).ToList();" + END;
             Result += GeneratePaging();
@@ -147,7 +147,7 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
             //generate select by foreign key
-            Result += TAB2 + "public int GetTotalItemBy" + fk.Name.Substring(2) + "(" + Utils.GetDataType(fk.Type) + " " + fk.Name.ToLower() + ")" + END;
+            Result += TAB2 + "public int GetTotalItemBy" + fk.Name + "(" + Utils.GetDataType(fk.Type) + " " + fk.Name.ToLower() + ")" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "return (from p in DataContext.Instance." + Utils.BuildModelName(_db, _table, GlobalVariables.g_ModelName) + " where p." + fk.Name + " == " + fk.Name.ToLower() + " select p).Count();" + END;
             Result += TAB2 + "}" + END;
@@ -187,9 +187,9 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public int GetTotalPageBy" + fk.Name.Substring(2) + "(" + Utils.GetDataType(fk.Type) + " " + fk.Name.ToLower() + ")" + END;
+            Result += TAB2 + "public int GetTotalPageBy" + fk.Name + "(" + Utils.GetDataType(fk.Type) + " " + fk.Name.ToLower() + ")" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "int RecordCount = GetTotalItemBy" + fk.Name.Substring(2) + "(" + fk.Name.ToLower() + ");" + END;
+            Result += TAB3 + "int RecordCount = GetTotalItemBy" + fk.Name + "(" + fk.Name.ToLower() + ");" + END;
             Result += TAB3 + "int PageSize = WebConfiguration.ProductsPerPage;" + END;
             Result += TAB3 + "return (RecordCount / PageSize) + ((RecordCount % PageSize == 0) ? 0 : 1);" + END;
             Result += TAB2 + "}" + END;
