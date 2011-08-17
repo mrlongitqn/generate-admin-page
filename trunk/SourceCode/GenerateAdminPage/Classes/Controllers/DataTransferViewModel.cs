@@ -58,13 +58,12 @@ namespace GenerateAdminPage.Classes
 
             Result += TAB + "public class DataTransferViewModel" + END;
             Result += TAB + "{" + END;
-
-            Result += TAB2 + "public int ProductsPerPage { get; set; }" + END;
             Result += TAB2 + "public int CurrentPage { get; set; }" + END;
             Result += TAB2 + "public EnumViewModel EnumViewModelType { get; set; }" + END;
-            Result += TAB2 + "public string EditID { get; set; }" + END;
-            Result += TAB2 + "public int IntEditID { get; set; }" + END;
-            Result += TAB2 + "public Guid EditIDNguoiDung { get; set; }" + END;
+            Result += TAB2 + "public string StrID { get; set; }" + END;
+            Result += TAB2 + "public int IntID { get; set; }" + END;
+            Result += TAB2 + "public Guid GuidID { get; set; }" + END;
+            Result += TAB2 + "public string UserName { get; set; }" + END;
             Result += TAB2 + "public string Role { get; set; }" + END;
             Result += TAB2 + "public bool Updated { get; set; }" + END;
             Result += TAB2 + "public bool Added { get; set; }" + END;
@@ -77,7 +76,6 @@ namespace GenerateAdminPage.Classes
 
             Result += TAB2 + "public DataTransferViewModel()" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "ProductsPerPage = WebConfiguration.ProductsPerPage;" + END;
             Result += TAB3 + "Updated = false;" + END;
             Result += TAB3 + "Added = false;" + END;
             Result += TAB3 + "CurrentPage = 1;" + END;
@@ -156,8 +154,10 @@ namespace GenerateAdminPage.Classes
             }
 
 
-            Result += TAB2 + "HOME_REGISTER" + END;
+            Result += TAB2 + "HOME_REGISTER," + END;
+            Result += TAB2 + "HOME_DETAILOF_NGUOIDUNG" + END;
             GlobalVariables.g_colEnumViewModel.Add("HOME_REGISTER");
+            GlobalVariables.g_colEnumViewModel.Add("HOME_DETAILOF_NGUOIDUNG");
             Result += TAB + "}" + END;
 
             return Result;

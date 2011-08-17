@@ -37,7 +37,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "var data = new DataTransferViewModel" + END;
             Result += TAB3 + "{" + END;
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_DETAILOF_" + GlobalVariables.g_ModelName.ToUpper() + "," + END;
-            Result += TAB4 + "EditIDNguoiDung = id" + END;
+            Result += TAB4 + "GuidID = id" + END;
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;
@@ -86,10 +86,10 @@ namespace GenerateAdminPage.Classes
             string Result = "";
 
             Result += TAB2 + "[AcceptVerbs(HttpVerbs.Delete)]" + END;
-            Result += TAB2 + "public JsonResult Delete" + GlobalVariables.g_ModelName + "(Guid id, string username, string role)" + END;
+            Result += TAB2 + "public JsonResult Delete" + GlobalVariables.g_ModelName + "(Guid id, string role)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "return Json(new{" + END;
-            Result += TAB4 + "Success = _rep" + GlobalVariables.g_ModelName + ".Delete(username)," + END;
+            Result += TAB4 + "Success = _rep" + GlobalVariables.g_ModelName + ".Delete(id)," + END;
             Result += TAB4 + "RecordCount = _rep" + GlobalVariables.g_ModelName + ".GetTotalPage(role)," + END;
             Result += TAB4 + "DeleteId = id" + END;
             Result += TAB3 + "});" + END;

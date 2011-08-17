@@ -42,11 +42,11 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + _table.Name.ToUpper() + "," + END;
             Result += TAB4 + "CurrentPage = page," + END;
             if (lst[0].Type == DataType.STRING)
-                Result += TAB4 + "EditID = " + Utils.BuildPKParams2(lst) + END;
+                Result += TAB4 + "StrID = " + Utils.BuildPKParams2(lst) + END;
             else if(lst[0].Type == DataType.GUILD)
-                Result += TAB4 + "EditIDNguoiDung = " + Utils.BuildPKParams2(lst) + END;
+                Result += TAB4 + "GuidID= " + Utils.BuildPKParams2(lst) + END;
             else
-                Result += TAB4 + "IntEditID = " + Utils.BuildPKParams2(lst) + END;
+                Result += TAB4 + "IntID = " + Utils.BuildPKParams2(lst) + END;
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return PartialView(\"Templates/TH_Edit" + _table.Name + "\", CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;

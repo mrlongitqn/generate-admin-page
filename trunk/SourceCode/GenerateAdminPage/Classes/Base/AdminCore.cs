@@ -21,42 +21,40 @@ namespace GenerateAdminPage.Classes
             DataContext.Instance.DataTextProvider.OutputValidateScriptPath = BasePath + @"\\Output\\Scripts\\";
         }
 
-        public string Generate()
+        public void Generate()
         {
-            string errText = "";
-            string dataSource = "";
-            string databaseName = "";
             try
             {
                 InitPaths();
 
-                if (DataContext.Instance.DataTextProvider.LoadDBInfo(ref dataSource, ref databaseName))
+                if (DataContext.Instance.DataTextProvider.LoadDBInfo())
                 {
-                    DataContext.Instance.CreateConnection(dataSource, databaseName);
-                    var DB1 = new DataBase();
-                    DataContext.Instance.InitDB(ref DB1);
-                    DataContext.Instance.SetForeignKey(ref DB1);
-
-                    DB = DB1;
+                    DataContext.Instance.CreateConnection();
+                    DB = new DataBase();
+                    DataContext.Instance.InitDB(DB);
+                    DataContext.Instance.SetForeignKey(DB);
                     GenerateOutput(DB);
+                    Console.WriteLine("Generated");
+                }
+                else
+                {
+                    throw new Exception("Cannot load DB info");
                 }
             }
             catch (Exception ex)
             {
-                errText = ex.Message;
+                throw new Exception(ex.Message);
             }
-
-            return errText;
         }
 
         public void GenerateOutput(DataBase DB)
         {
             GenerateRepositories(DB);
             GenerateViewModels(DB);
-            GenerateControllers(DB);
-            GenerateDataTransferViewModel(DB);
             GenerateGroupViewModel();
+            GenerateDataTransferViewModel(DB);
             GenerateBaseController(DB);
+            GenerateControllers(DB);
             GenerateViews(DB);
             GenerateValidateScript(DB);
             DeleteTrashFiles();
@@ -159,34 +157,42 @@ namespace GenerateAdminPage.Classes
 
         public void GenerateRepositories(DataBase DB)
         {
-            Repository _rep = null;
-            string result = "";
-            string path = "";
-            Table nguoiDung = null;//extra info
-
-            for (int i = 0; i < DB.Tables.Count; i++)
+            try
             {
-                if (DB.Tables[i].Name != GlobalVariables.g_sTableNguoiDung && DB.Tables[i].Name != "aspnet_Users" && DB.Tables[i].Name != "sysdiagrams")
+                Repository _rep = null;
+                string result = "";
+                string path = "";
+                Table nguoiDung = null;//extra info
+
+                for (int i = 0; i < DB.Tables.Count; i++)
                 {
-                    _rep = new Repository();
-                    result = _rep.GenerateClasses(DB, DB.Tables[i]);
-                    path = DataContext.Instance.DataTextProvider.OutputRepositoriesPath + DB.Tables[i].Name + "Repository.cs";
-                    DataContext.Instance.DataTextProvider.WriteData(result, path);
+                    if (DB.Tables[i].Name != GlobalVariables.g_sTableNguoiDung &&
+                        DB.Tables[i].Name != "aspnet_Users" && DB.Tables[i].Name != "sysdiagrams")
+                    {
+                        _rep = new Repository();
+                        result = _rep.GenerateClasses(DB, DB.Tables[i]);
+                        path = DataContext.Instance.DataTextProvider.OutputRepositoriesPath + DB.Tables[i].Name + "Repository.cs";
+                        DataContext.Instance.DataTextProvider.WriteData(result, path);
+                    }
+                    else if (DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
+                    {
+                        nguoiDung = DB.Tables[i];
+                    }
                 }
-                else if (DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
+
+                //Generate NguoiDung view model
+                _rep = new NguoiDungRepository
                 {
-                    nguoiDung = DB.Tables[i];
-                }
+
+                };
+                result = _rep.GenerateClasses(DB, nguoiDung);
+                path = DataContext.Instance.DataTextProvider.OutputRepositoriesPath + GlobalVariables.g_sTableNguoiDung + "Repository.cs";
+                DataContext.Instance.DataTextProvider.WriteData(result, path);
             }
-
-            //Generate NguoiDung view model
-            _rep = new NguoiDungRepository
+            catch (Exception ex)
             {
-                
-            };
-            result = _rep.GenerateClasses(DB, nguoiDung);
-            path = DataContext.Instance.DataTextProvider.OutputRepositoriesPath + GlobalVariables.g_sTableNguoiDung + "Repository.cs";
-            DataContext.Instance.DataTextProvider.WriteData(result, path);
+                throw new Exception(ex.Message);
+            }
         }
 
         public void GenerateGroupViewModel()

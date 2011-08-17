@@ -7,12 +7,13 @@ namespace GenerateAdminPage.Classes
 {
     public static class GlobalVariables
     {
+        public static string g_sDataSource = "";
+        public static string g_sDatabaseName = "";
         public static string g_sNameSpace = "";
         public static string g_sTableNguoiDung = "NguoiDung";
         public static string g_sSuperAdmin = "SuperAdmin";
         public static string g_sAdmin = "Admin";
         public static string g_ModelName = "";
-        public static string g_sDatabaseName = "";
         public static List<string> g_colEnumViewModel = new List<string>();
         public static IDictionary<string, string> g_colUsingFCK = new Dictionary<string, string>();
         public static IDictionary<string, string> g_colTableHaveImage = new Dictionary<string, string>();

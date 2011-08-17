@@ -17,19 +17,15 @@ namespace GenerateAdminPage.Classes
         public SqlCommand ObjCommand { get; set; }
         public SqlDataAdapter ObjDataAdapter { get; set; }
         public SqlDataReader ObjDataReader { get; set; }
-        public string DataSource { get; set; }
-        public string DataBaseName { get; set; }
         /// <summary>
         /// truyen duong dan toi thuc muc chua database de thuc thi ket noi
         /// </summary>
         /// <param name="strPath"></param>
-        public void InitDBProvider(string dataSource, string databaseName)
+        public void InitDBProvider()
         {
             try
             {
-                DataSource = dataSource;
-                DataBaseName = databaseName;
-                ObjConnection = new SqlConnection("Data Source=" + dataSource + ";Initial Catalog=" + databaseName + ";Integrated Security=True");
+                ObjConnection = new SqlConnection("Data Source=" + GlobalVariables.g_sDataSource + ";Initial Catalog=" + GlobalVariables.g_sDatabaseName + ";Integrated Security=True");
             }
             catch (System.Exception e)
             {
@@ -53,7 +49,7 @@ namespace GenerateAdminPage.Classes
             }
             catch (System.Exception SqlExceptionErr)
             {
-                throw new System.Exception(SqlExceptionErr.Message,
+                throw new Exception(SqlExceptionErr.Message,
                 SqlExceptionErr.InnerException);
             }
         }

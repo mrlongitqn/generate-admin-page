@@ -64,9 +64,9 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_DETAILOF_" + _table.Name.ToUpper() + "," + END;
            
             if (lst[0].Type == DataType.STRING)
-                Result += TAB4 + "EditID = " + Utils.BuildPKParams2(lst) + END;
-            else
-                Result += TAB4 + "IntEditID = " + Utils.BuildPKParams2(lst) + END;
+                Result += TAB4 + "StrID = " + Utils.BuildPKParams2(lst) + END;
+            else if(lst[0].Type == DataType.INT)
+                Result += TAB4 + "IntID = " + Utils.BuildPKParams2(lst) + END;
            
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(CreateViewModel(data));" + END;
@@ -127,32 +127,6 @@ namespace GenerateAdminPage.Classes
                 {
                     //generate select by foreign key
                     Result += GenerateSelectByFK(_table.Attributes[i]) + END;
-                }
-            }
-
-            var lst = Utils.FKHaveMoreThan1Attribute(_table);
-            if (lst.Count > 0)
-            {
-                //find items have same refer to
-                while (lst.Count > 0)
-                {
-                    var item = lst[0];
-                    List<Attribute> lstItem = new List<Attribute>();
-                    lstItem.Add(item);
-
-                    for (int i = 1; i < lst.Count; i++)
-                    {
-                        if (lst[i].ReferTo == item.ReferTo)
-                        {
-                            lstItem.Add(lst[i]);
-                        }
-                    }
-
-                    Result += GenerateSelectByFK(lstItem) + END;
-                    for (int i = 0; i < lstItem.Count; i++)
-                    {
-                        lst.Remove(lstItem[i]);
-                    }
                 }
             }
             return Result;
@@ -435,11 +409,11 @@ namespace GenerateAdminPage.Classes
 
             if (lst[0].Type == DataType.STRING)
             {
-                Result += TAB4 + "EditID = " + Utils.BuildPKParams2(lst) + "," + END;
+                Result += TAB4 + "StrID = " + Utils.BuildPKParams2(lst) + "," + END;
             }
             else
             {
-                Result += TAB4 + "IntEditID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
+                Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
             }
 
             Result += TAB4 + "Updated = result," + END;
@@ -466,7 +440,9 @@ namespace GenerateAdminPage.Classes
             if (!GlobalVariables.g_colUsingFCK.Keys.Contains(_table.Name))
             {
                 if (GlobalVariables.g_colPaging.Contains(_table.Name))
+                {
                     Result += TAB3 + "string currentpage = forms.GetValues(\"" + _table.Name + "_CurrentPage\")[0];" + END;
+                }
             }
             var lst = Utils.PKHaveMoreThan1Attribute(_table);
             //need editing
@@ -492,15 +468,21 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "var data = new DataTransferViewModel" + END;
                 Result += TAB3 + "{" + END;
                 Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + _table.Name.ToUpper() + "," + END;
-                
-                if(GlobalVariables.g_colPaging.Contains(_table.Name))
+
+                if (GlobalVariables.g_colPaging.Contains(_table.Name))
+                {
                     Result += TAB4 + "CurrentPage = int.Parse(currentpage)" + END;
+                }
                 
                 Result += TAB3 + "};" + END;
-                if(GlobalVariables.g_colUsingAjax.Contains(_table.Name))
+                if (GlobalVariables.g_colUsingAjax.Contains(_table.Name))
+                {
                     Result += TAB3 + "return PartialView(\"Templates/TH_List" + _table.Name + "\", CreateViewModel(data));" + END;
+                }
                 else
+                {
                     Result += TAB3 + "return View(\"Select" + _table.Name + "\", CreateViewModel(data));" + END;
+                }
             }
             else
             {
@@ -512,11 +494,11 @@ namespace GenerateAdminPage.Classes
 
                 if (lst[0].Type == DataType.STRING)
                 {
-                    Result += TAB4 + "EditID = " + Utils.BuildPKParams2(lst) + "," + END;
+                    Result += TAB4 + "StrID = " + Utils.BuildPKParams2(lst) + "," + END;
                 }
                 else
                 {
-                    Result += TAB4 + "IntEditID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
+                    Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
                 }
 
                 Result += TAB4 + "Updated = result," + END;
