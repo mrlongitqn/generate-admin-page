@@ -15,19 +15,8 @@ namespace GenerateAdminPage
         static AdminCore _adminCore = new AdminCore();
         static void Main(string[] args)
         {
-            string errText = "";
             _adminCore.BasePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
-            errText = _adminCore.Generate();
-
-            if (errText == "")
-            {
-                Console.WriteLine("Generated");
-            }
-            else
-            {
-                Console.WriteLine(errText);
-            }
+            _adminCore.Generate();
         }
     }
 }

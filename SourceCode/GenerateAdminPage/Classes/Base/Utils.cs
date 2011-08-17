@@ -163,35 +163,6 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
-        public static List<Attribute> FKHaveMoreThan1Attribute(Table _tbl)
-        {
-            List<Attribute> KeySameRefer = new List<Attribute>();
-
-            for (int i = 0; i < _tbl.Attributes.Count; i++)
-            {
-                for (int j = i + 1; j < _tbl.Attributes.Count - 1; j++)
-                {
-                    if (_tbl.Attributes[i].IsForeignKey && _tbl.Attributes[j].IsForeignKey)
-                    {
-                        if (_tbl.Attributes[i].ReferTo == _tbl.Attributes[j].ReferTo)
-                        {
-                            if (!KeySameRefer.Contains(_tbl.Attributes[i]))
-                            {
-                                KeySameRefer.Add(_tbl.Attributes[i]);
-                            }
-
-                            if (!KeySameRefer.Contains(_tbl.Attributes[j]))
-                            {
-                                KeySameRefer.Add(_tbl.Attributes[j]);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return KeySameRefer;
-        }
-
         public static string BuildFKParams(List<Attribute> lst)
         {
             string Result = "";
@@ -370,53 +341,63 @@ namespace GenerateAdminPage.Classes
         public static string BuildModelName(DataBase db, Table tbl, string ModelName)
         {
             string Result = "";
-            int count = 0;
 
-            //for (int i = 0; i < db.Tables.Count; i++)
-            //{
-            //    //Consider other table
-            //    if (db.Tables[i].Name != ModelName)
-            //    {
-            //        if (Utils.IsForeignKeyReferTo(tbl, db.Tables[i]))
-            //        {
-            //            count++;
-            //        }
-            //    }
-            //}
+            var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
+            var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
+            string modifiedModelName = "";
 
-            //if (count > 1)
-            //{
-            //    Result = ModelName;
-            //}
-            //else
-            //{
-                var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
-                var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
-                string modifiedModelName = "";
-
-                if (TwoLastChars.Contains("CE") ||
-                    TwoLastChars.Contains("CH") ||
-                    TwoLastChars.Contains("GE") ||
-                    TwoLastChars.Contains("SH") ||
-                    TwoLastChars.Contains("SS") ||
-                    //LastChars.Contains("O") ||
-                    LastChars.Contains("S") ||
-                    LastChars.Contains("X") ||
-                    LastChars.Contains("Z"))
+            if (TwoLastChars.Contains("CE") ||
+                TwoLastChars.Contains("CH") ||
+                TwoLastChars.Contains("GE") ||
+                TwoLastChars.Contains("SH") ||
+                TwoLastChars.Contains("SS") ||
+                LastChars.Contains("S") ||
+                LastChars.Contains("X") ||
+                LastChars.Contains("Z"))
+            {
+                Result = ModelName + "es";
+            }
+            else if (LastChars.Contains("Y"))
+            {
+                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
                 {
-                    modifiedModelName = ModelName;
-                    Result = modifiedModelName + "es";
+                    Result = ModelName + "s";
                 }
-                else if (LastChars.Contains("Y"))
+                else
                 {
                     modifiedModelName = ModelName.Substring(0, ModelName.Length - 1);
                     Result = modifiedModelName + "ies";
+                }
+            }
+            else if (LastChars.Contains("O"))
+            {
+                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
+                {
+                    Result = ModelName + "s";
+                }
+                else
+                {
+                    Result = ModelName + "es";
+                }
+            }
+            else if (LastChars.Contains("U"))
+            {
+                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
+                {
+                    Result = ModelName + "x";
                 }
                 else
                 {
                     Result = ModelName + "s";
                 }
-            //}
+            }
+            else
+            {
+                Result = ModelName + "s";
+            }
 
             return Result;
         }

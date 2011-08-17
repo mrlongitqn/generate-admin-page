@@ -59,32 +59,6 @@ namespace GenerateAdminPage.Classes
                     Result += GenerateSelectByForeignKey(_table.Attributes[i]) + END;
                 }
             }
-
-            var lst = Utils.FKHaveMoreThan1Attribute(_table);
-            if (lst.Count > 0)
-            {
-                //find items have same refer to
-                while (lst.Count > 0)
-                {
-                    var item = lst[0];
-                    List<Attribute> lstItem = new List<Attribute>();
-                    lstItem.Add(item);
-
-                    for (int i = 1; i < lst.Count; i++)
-                    {
-                        if (lst[i].ReferTo == item.ReferTo)
-                        {
-                            lstItem.Add(lst[i]);
-                        }
-                    }
-
-                    Result += GenerateSelectByForeignKey(lstItem) + END;
-                    for (int i = 0; i < lstItem.Count; i++)
-                    {
-                        lst.Remove(lstItem[i]);
-                    }
-                }
-            }
             Result += TAB + "}" + END;
 
             return Result;
@@ -176,7 +150,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public int GetTotalPage()" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "int RecordCount = GetTotalItem();" + END;
-            Result += TAB3 + "int PageSize = WebConfiguration.ProductsPerPage;" + END;
+            Result += TAB3 + "int PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage;" + END;
             Result += TAB3 + "return (RecordCount / PageSize) + ((RecordCount % PageSize == 0) ? 0 : 1);" + END;
             Result += TAB2 + "}" + END;
 
@@ -190,7 +164,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public int GetTotalPageBy" + fk.Name + "(" + Utils.GetDataType(fk.Type) + " " + fk.Name.ToLower() + ")" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "int RecordCount = GetTotalItemBy" + fk.Name + "(" + fk.Name.ToLower() + ");" + END;
-            Result += TAB3 + "int PageSize = WebConfiguration.ProductsPerPage;" + END;
+            Result += TAB3 + "int PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage;" + END;
             Result += TAB3 + "return (RecordCount / PageSize) + ((RecordCount % PageSize == 0) ? 0 : 1);" + END;
             Result += TAB2 + "}" + END;
 

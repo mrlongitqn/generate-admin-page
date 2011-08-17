@@ -55,8 +55,10 @@ namespace GenerateAdminPage.Classes
             Result += GenerateSelectAll() + END;
             Result += GenerateSelectPaging() + END;
             Result += GenerateSelectByUserName() + END;
-            if(_table!=null)
+            if (_table != null)
+            {
                 Result += GenerateSelectByID() + END;
+            }
             Result += GenerateDelete() + END;
             Result += GenerateSave() + END;
             Result += GenerateInsert() + END;
@@ -79,9 +81,9 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "{" + END;
             Result += TAB4 + "var roleForUser = Roles.GetRolesForUser(user.UserName)[0];" + END;
 
-            Result += TAB4 + "if (role == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB4 + "if (role.ToUpper() == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
             
             Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
@@ -115,9 +117,9 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "}" + END;
             Result += TAB4 + "}" + END;
 
-            Result += TAB4 + "else if (role == \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB4 + "else if (role.ToUpper() == \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser != \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser.ToUpper() != \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
             Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
@@ -171,9 +173,9 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "{" + END;
             Result += TAB4 + "var roleForUser = Roles.GetRolesForUser(user.UserName)[0];" + END;
 
-            Result += TAB4 + "if (role == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB4 + "if (role.ToUpper() == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
             Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
@@ -205,9 +207,9 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "}" + END;
             Result += TAB4 + "}" + END;
 
-            Result += TAB4 + "else if (role == \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB4 + "else if (role.ToUpper() == \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser != \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser.ToUpper() != \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
             Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
@@ -334,7 +336,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "errorText = \"\";" + END;
             Result += TAB3 + "try" + END;
             Result += TAB3 + "{" + END;
-            
+
             Result += TAB4 + "MembershipCreateStatus createStatus;" + END;
             Result += TAB4 + "MembershipUser newUser = Membership.CreateUser(obj.Info.BaseInfo.UserName, obj.Info.BaseInfo.Password, obj.Info.BaseInfo.Email, \"What is your favouritr color?\", \"Black Or White\", true, out createStatus);" + END;
             Result += TAB4 + "switch (createStatus)" + END;
@@ -370,6 +372,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "{" + END;
             Result += TAB5 + "return false;" + END;
             Result += TAB4 + "}" + END;
+
             Result += TAB4 + "return true;" + END;
             Result += TAB3 + "}" + END;
             Result += TAB3 + "catch" + END;
@@ -386,18 +389,21 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public bool Delete(string username)" + END;
+            Result += TAB2 + "public bool Delete(Guid id)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "try" + END;
             Result += TAB3 + "{" + END;
-            Result += TAB4 + "var id = (Guid)Membership.GetUser(username).ProviderUserKey;" + END;
             if (_table != null)
             {
                 Result += TAB4 + "var item = DataContext.Instance." + GlobalVariables.g_ModelName + "s.FirstOrDefault(p => p." + Utils.GetPKWith1Attr(_table) + " == id);" + END;
                 Result += TAB4 + "DataContext.Instance." + GlobalVariables.g_ModelName + "s.DeleteObject(item);" + END;
                 Result += TAB4 + "DataContext.Instance.SaveChanges();" + END;
+                Result += TAB4 + "Membership.DeleteUser(Membership.GetUser(id).UserName, true);" + END;
             }
-            Result += TAB4 + "Membership.DeleteUser(username, true);" + END;
+            else
+            {
+                Result += TAB4 + "Membership.DeleteUser(Membership.GetUser(id).UserName, true);" + END;
+            }
             Result += TAB4 + "return true;" + END;
             Result += TAB3 + "}" + END;
             Result += TAB3 + "catch" + END;
@@ -422,18 +428,18 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "{" + END;
             Result += TAB4 + "var roleForUser = Roles.GetRolesForUser(user.UserName)[0];" + END;
 
-            Result += TAB4 + "if (role == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB4 + "if (role.ToUpper() == \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
             Result += TAB6 + "count++;" + END;
             Result += TAB5 + "}" + END;
             Result += TAB4 + "}" + END;
 
-            Result += TAB4 + "else if (role == \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB4 + "else if (role.ToUpper() == \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "if (roleForUser != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser != \"" + GlobalVariables.g_sAdmin + "\")" + END;
+            Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser.ToUpper() != \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
             Result += TAB6 + "count++;" + END;
@@ -453,7 +459,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public int GetTotalPage(string role)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "int RecordCount = GetTotalItem(role);" + END;
-            Result += TAB3 + "int PageSize = WebConfiguration.ProductsPerPage;" + END;
+            Result += TAB3 + "int PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage;" + END;
             Result += TAB3 + "return (RecordCount / PageSize) + ((RecordCount % PageSize == 0) ? 0 : 1);" + END;
             Result += TAB2 + "}" + END;
 

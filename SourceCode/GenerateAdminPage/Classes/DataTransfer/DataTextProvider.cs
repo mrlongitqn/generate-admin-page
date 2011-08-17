@@ -23,45 +23,45 @@ namespace GenerateAdminPage.Classes
         #endregion
 
         #region Methods
-        public bool LoadDBInfo(ref string dataSoure, ref string dataBaseName)
+        public bool LoadDBInfo()
         {
             try
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(InputPath);
+                XmlElement root = doc.DocumentElement;
 
-                dataSoure = doc.GetElementsByTagName("datasource")[0].InnerText;
-                dataBaseName = doc.GetElementsByTagName("databasename")[0].InnerText;
-                GlobalVariables.g_sDatabaseName = dataBaseName;
-                GlobalVariables.g_sNameSpace = doc.GetElementsByTagName("namespace")[0].InnerText;
-                GlobalVariables.g_sTableNguoiDung = doc.GetElementsByTagName("usertablename")[0].InnerText;
-                GlobalVariables.g_sSuperAdmin = doc.GetElementsByTagName("superadmin")[0].InnerText;
-                GlobalVariables.g_sAdmin = doc.GetElementsByTagName("admin")[0].InnerText;
+                GlobalVariables.g_sDataSource = root.SelectSingleNode("datasource").InnerText;
+                GlobalVariables.g_sDatabaseName = root.SelectSingleNode("databasename").InnerText;
+                GlobalVariables.g_sNameSpace = root.SelectSingleNode("namespace").InnerText;
+                GlobalVariables.g_sTableNguoiDung = root.SelectSingleNode("usertablename").InnerText;
+                GlobalVariables.g_sSuperAdmin = root.SelectSingleNode("superadmin").InnerText.ToUpper();
+                GlobalVariables.g_sAdmin = root.SelectSingleNode("admin").InnerText.ToUpper();
+                GlobalVariables.g_DefaultGuid = Guid.Parse(root.SelectSingleNode("defaultguid").InnerText);
+                GlobalVariables.g_sNoImages = root.SelectSingleNode("noimages").InnerText;
 
-                var lst = doc.GetElementsByTagName("usingfck");
-                for (int i = 0; i < lst[0].ChildNodes.Count; i++)
+                var lst = root.SelectSingleNode("usingfck").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    GlobalVariables.g_colUsingFCK.Add(lst[0].ChildNodes[i].Attributes["id"].Value, lst[0].ChildNodes[i].Attributes["attr"].Value);
+                    GlobalVariables.g_colUsingFCK.Add(lst[i].Attributes["id"].Value, lst[i].Attributes["attr"].Value);
                 }
 
-                lst = doc.GetElementsByTagName("tablehaveimage");
-                for (int i = 0; i < lst[0].ChildNodes.Count; i++)
+                lst = root.SelectSingleNode("tablehaveimage").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    GlobalVariables.g_colTableHaveImage.Add(lst[0].ChildNodes[i].Attributes["id"].Value, lst[0].ChildNodes[i].Attributes["attr"].Value);
-                }
-                GlobalVariables.g_DefaultGuid = Guid.Parse(doc.GetElementsByTagName("defaultguid")[0].InnerText);
-                GlobalVariables.g_sNoImages = doc.GetElementsByTagName("noimages")[0].InnerText;
-
-                lst = doc.GetElementsByTagName("paging");
-                for (int i = 0; i < lst[0].ChildNodes.Count; i++)
-                {
-                    GlobalVariables.g_colPaging.Add(lst[0].ChildNodes[i].InnerText);
+                    GlobalVariables.g_colTableHaveImage.Add(lst[i].Attributes["id"].Value, lst[i].Attributes["attr"].Value);
                 }
 
-                lst = doc.GetElementsByTagName("usingajax");
-                for (int i = 0; i < lst[0].ChildNodes.Count; i++)
+                lst = root.SelectSingleNode("paging").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
                 {
-                    GlobalVariables.g_colUsingAjax.Add(lst[0].ChildNodes[i].InnerText);
+                    GlobalVariables.g_colUsingAjax.Add(lst[i].InnerText);
+                }
+
+                lst = root.SelectSingleNode("usingajax").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    GlobalVariables.g_colUsingAjax.Add(lst[i].InnerText);
                 }
                 return true;
             }

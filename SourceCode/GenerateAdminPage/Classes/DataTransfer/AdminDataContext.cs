@@ -38,9 +38,9 @@ namespace GenerateAdminPage.Classes
             DBProvider = new DBProvider();
         }
 
-        public void CreateConnection(string dataSource, string dataBase)
+        public void CreateConnection()
         {
-            DBProvider.InitDBProvider(dataSource, dataBase);
+            DBProvider.InitDBProvider();
         }
 
         public List<string> GetTables()
@@ -62,7 +62,7 @@ namespace GenerateAdminPage.Classes
             } 
         }
 
-        public void InitDB(ref DataBase DB)
+        public void InitDB(DataBase DB)
         {
             var lstTable = GetTables();
 
@@ -149,7 +149,7 @@ namespace GenerateAdminPage.Classes
             }
         }
 
-        public void SetForeignKey(ref DataBase DB)
+        public void SetForeignKey(DataBase DB)
         {
             for (int i = 0; i < DB.Tables.Count; i++)
             {
@@ -165,7 +165,7 @@ namespace GenerateAdminPage.Classes
                 //The "serverConnection is used in the ctor of the Server.
                 server = new Microsoft.SqlServer.Management.Smo.Server(serverConnection);
 
-                db = server.Databases[DBProvider.DataBaseName];
+                db = server.Databases[GlobalVariables.g_sDatabaseName];
 
                 Microsoft.SqlServer.Management.Smo.Table tbl;
                 //get foreign key list of corresponding table

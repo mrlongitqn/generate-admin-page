@@ -38,6 +38,7 @@ namespace GenerateAdminPage.Classes
             Result += GenerateCreateViewModel() + END;
             Result += GenerateUploadFile() + END;
             Result += GenerateDeleteFile() + END;
+            Result += GenerateSendingEmail() + END;
             Result += GenerateListRetrieveViewModel() + END;
             Result += GenerateRetrieveNguoiDungViewModel() + END;
             Result += GenerateDetailOf() + END;
@@ -61,12 +62,28 @@ namespace GenerateAdminPage.Classes
                     Result += TAB3 + "{" + END;
                     Result += TAB4 + "GetModel = new Get" + _db.Tables[i].Name + "ViewModel" + END;
                     Result += TAB4 + "{" + END;
-                    Result += TAB5 + "LstObjModel = _rep" + _db.Tables[i].Name + ".RetrieveByID(dataTransfer.EditID)" + END;
+
+                    var id = "";
+                    if (_db.Tables[i].Attributes[i].Type == DataType.STRING)
+                    {
+                        id = "StrID";
+                    }
+                    else if (_db.Tables[i].Attributes[i].Type == DataType.GUILD)
+                    {
+                        id = "GuidID";
+                    }
+                    else
+                    {
+                        id = "IntID";
+                    }
+
+                    Result += TAB5 + "LstObjModel = _rep" + _db.Tables[i].Name + ".RetrieveByID(dataTransfer." + id + ")" + END;
+
                     Result += TAB4 + "}," + END;
                     Result += TAB4 + "AddModel = new Add" + _db.Tables[i].Name + "ViewModel()," + END;
                     Result += TAB4 + "EditModel = new Edit" + _db.Tables[i].Name + "ViewModel" + END;
                     Result += TAB4 + "{" + END;
-                    Result += TAB5 + "ID = dataTransfer.EditID," + END;
+                    Result += TAB5 + "ID = dataTransfer." + id + "," + END;
                     Result += TAB5 + "Edited = dataTransfer.Updated" + END;
                     Result += TAB4 + "}" + END;
                     Result += TAB3 + "};" + END;
@@ -197,6 +214,40 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
+        public string GenerateSendingEmail()
+        {
+            string Result = "";
+
+            Result += TAB2 + "public bool SendingMail(string subject, string emailContent, string to)" + END;
+            Result += TAB2 + "{" + END;
+            Result += TAB3 + "bool result = false;" + END;
+            Result += TAB3 + "try" + END;
+            Result += TAB3 + "{" + END;
+
+            Result += TAB4 + "System.Net.Mail.SmtpClient mailclient = new System.Net.Mail.SmtpClient();" + END;
+            Result += TAB4 + "System.Net.NetworkCredential auth = new System.Net.NetworkCredential(WebConfiguration.EmailLienHe, WebConfiguration.PasswordEmailLienHe);" + END;
+            Result += TAB4 + "mailclient.Host = WebConfiguration.MailServer;" + END;
+            Result += TAB4 + "mailclient.EnableSsl = true;" + END;
+            Result += TAB4 + "mailclient.UseDefaultCredentials = true;" + END;
+            Result += TAB4 + "mailclient.Credentials = auth;" + END;
+            Result += TAB4 + "System.Net.Mail.MailMessage mm = new System.Net.Mail.MailMessage(WebConfiguration.EmailLienHe, to);" + END;
+            Result += TAB4 + "mm.Subject = subject;" + END;
+            Result += TAB4 + "mm.IsBodyHtml = true;" + END;
+            Result += TAB4 + "mm.Body = emailContent;" + END;
+            Result += TAB4 + "mailclient.Send(mm);" + END;
+            Result += TAB4 + "result = true;" + END;
+
+            Result += TAB3 + "}" + END;
+            Result += TAB3 + "catch" + END;
+            Result += TAB3 + "{" + END;
+            Result += TAB4 + "result = false;" + END;
+            Result += TAB3 + "}" + END;
+            Result += TAB3 + "return result;" + END;
+            Result += TAB2 + "}" + END;
+
+            return Result;
+        }
+
         public string GenerateListRetrieveViewModel()
         {
             string Result = "";
@@ -219,7 +270,7 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
-        public string GenerateRetrieveViewModelByFK(Table _tbl)
+        public string   GenerateRetrieveViewModelByFK(Table _tbl)
         {
             string Result = "";
 
@@ -293,15 +344,15 @@ namespace GenerateAdminPage.Classes
                                 Result += TAB3 + "else if (dataTransfer." + _tbl.Attributes[i].Name + " != Guid.Parse(\"" + GlobalVariables.g_DefaultGuid + "\"))" + END;
                         }
                         Result += TAB3 + "{" + END;
-                        Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectBy" + _tbl.Attributes[i].Name.Substring(2) + "(dataTransfer." + _tbl.Attributes[i].Name + ", dataTransfer.CurrentPage, dataTransfer.ProductsPerPage);" + END;
-                        Result += TAB4 + "totalitem = _rep" + _tbl.Name + ".GetTotalItemBy" + _tbl.Attributes[i].Name.Substring(2) + "(dataTransfer." + _tbl.Attributes[i].Name + ");" + END;
+                        Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ", dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage);" + END;
+                        Result += TAB4 + "totalitem = _rep" + _tbl.Name + ".GetTotalItemBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ");" + END;
                         Result += TAB3 + "}" + END;
                     }
                 }
             }
             Result += TAB3 + "else" + END;
             Result += TAB3 + "{" + END;
-            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectPaging" + "(dataTransfer.CurrentPage, dataTransfer.ProductsPerPage);" + END;
+            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectPaging" + "(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage);" + END;
             Result += TAB4 + "totalitem = _rep" + _tbl.Name + ".GetTotalItem();" + END;
             Result += TAB3 + "}" + END;
             Result += TAB3 + "return new " + _tbl.Name + "ViewModel" + END;
@@ -324,15 +375,15 @@ namespace GenerateAdminPage.Classes
                 {
                     if (_tbl.Attributes[i].Type == DataType.STRING)
                     {
-                        Result += TAB5 + "ID = dataTransfer.EditID," + END;
+                        Result += TAB5 + "ID = dataTransfer.StrID," + END;
                     }
                     else if (_tbl.Attributes[i].Type == DataType.GUILD)
                     {
-                        Result += TAB5 + "ID = dataTransfer.EditIDNguoiDung," + END;
+                        Result += TAB5 + "ID = dataTransfer.GuidID," + END;
                     }
                     else
                     {
-                        Result += TAB5 + "ID = dataTransfer.IntEditID," + END;
+                        Result += TAB5 + "ID = dataTransfer.IntID," + END;
                     }
                 }
             }
@@ -369,11 +420,15 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "{" + END;
             Result += TAB4 + "GetModel = new Get" + _tbl.Name + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            
+
             if (GlobalVariables.g_colPaging.Contains(_tbl.Name))
-                Result += TAB5 + "LstObjModel = _rep" + _tbl.Name + ".SelectPaging(dataTransfer.CurrentPage, dataTransfer.ProductsPerPage)," + END;
+            {
+                Result += TAB5 + "LstObjModel = _rep" + _tbl.Name + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage)," + END;
+            }
             else
+            {
                 Result += TAB5 + "LstObjModel = _rep" + _tbl.Name + ".SelectAll()," + END;
+            }
 
             Result += TAB5 + "TotalItem = _rep" + _tbl.Name + ".GetTotalItem()," + END;
             Result += TAB5 + "CurrentPage = dataTransfer.CurrentPage" + END;
@@ -390,15 +445,15 @@ namespace GenerateAdminPage.Classes
                 {
                     if (_tbl.Attributes[i].Type == DataType.STRING)
                     {
-                        Result += TAB5 + "ID = dataTransfer.EditID," + END;
+                        Result += TAB5 + "ID = dataTransfer.StrID," + END;
                     }
                     else if (_tbl.Attributes[i].Type == DataType.GUILD)
                     {
-                        Result += TAB5 + "ID = dataTransfer.EditIDNguoiDung," + END;
+                        Result += TAB5 + "ID = dataTransfer.GuidID," + END;
                     }
                     else
                     {
-                        Result += TAB5 + "ID = dataTransfer.IntEditID," + END;
+                        Result += TAB5 + "ID = dataTransfer.IntID," + END;
                     }
                 }
             }
@@ -420,7 +475,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "{" + END;
             Result += TAB4 + "GetModel = new Get" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "LstObjModel = _rep" + GlobalVariables.g_ModelName + ".SelectPaging(dataTransfer.CurrentPage, dataTransfer.ProductsPerPage, dataTransfer.Role)," + END;
+            Result += TAB5 + "LstObjModel = _rep" + GlobalVariables.g_ModelName + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage, dataTransfer.Role)," + END;
             Result += TAB5 + "TotalItem = _rep" + GlobalVariables.g_ModelName + ".GetTotalItem(dataTransfer.Role)," + END;
             Result += TAB5 + "CurrentPage = dataTransfer.CurrentPage" + END;
             Result += TAB4 + "}," + END;
@@ -430,7 +485,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "}," + END;
             Result += TAB4 + "EditModel = new Edit" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "ID = dataTransfer.EditIDNguoiDung," + END;
+            Result += TAB5 + "ID = dataTransfer.GuidID," + END;
             Result += TAB5 + "Edited = dataTransfer.Updated" + END;
             Result += TAB4 + "}" + END;
             Result += TAB3 + "};" + END;

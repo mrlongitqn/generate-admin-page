@@ -33,7 +33,7 @@ namespace GenerateAdminPage.Classes
 
             Result += TAB2 + "public ActionResult Index()" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "return null;" + END;
+            Result += TAB3 + "return RedirectToAction(\"SelectNguoiDung\");" + END;
             Result += TAB2 + "}" + END;
 
             Result += TAB + "}" + END;
