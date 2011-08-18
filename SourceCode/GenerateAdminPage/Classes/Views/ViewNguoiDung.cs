@@ -65,37 +65,53 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "<br />" + END;
             Result += "</asp:Content>" + END;
             Result += "<asp:Content ID=\"Content3\" ContentPlaceHolderID=\"MainContent2\" runat=\"server\">" + END;
-            if (haveUsingFCK)
-            {
-                Result += TAB + "<script src=\"../../Scripts/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>" + END;
-                Result += TAB + "<script type=\"text/javascript\">" + END;
-                Result += TAB2 + "window.onload = function () {" + END;
-                Result += TAB3 + "var objFckEditor = new FCKeditor('" + GlobalVariables.g_ModelName + "_NoiDung');" + END;
-                Result += TAB3 + "objFckEditor.BasePath = '<%= ResolveUrl(\"~/Scripts/fckeditor/\")%>';" + END;
-                Result += TAB3 + "objFckEditor.Height = 480;" + END;
-                Result += TAB3 + "objFckEditor.Width = 600;" + END;
-                Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
-                Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
-                Result += TAB3 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.UpdatedItem){ %>" + END;
-                Result += TAB4 + "alert(\"A new item has been updated!\");" + END;
-                Result += TAB3 + "<% } %>" + END;
-                Result += TAB2 + "}" + END;
-                Result += TAB + "</script>" + END;
-            }
 
-            if (haveUploadFiles)
-            {
-                Result += TAB + "<% using (Html.BeginForm(\"Insert" + GlobalVariables.g_ModelName + "\", \"Admin\", FormMethod.Post, new { enctype = \"multipart/form-data\", onsubmit = \"return Validate" + GlobalVariables.g_ModelName + "();\" }))" + END;
-            }
-            else
-            {
-                Result += TAB + "<% using (Ajax.BeginForm(\"Insert" + GlobalVariables.g_ModelName + "\", \"Admin\", new AjaxOptions { OnComplete = \"jsonAdd_OnComplete\" }))" + END;
-            }
-            Result += TAB + "{ %>" + END;
-            Result += TAB2 + "<div style=\"padding-top: 40px\">" + END;
-            Result += TAB3 + "<span style=\"font-size:18px; font-weight:bold;\">Edit " + GlobalVariables.g_ModelName + "</span>" + END;
+            Result += TAB2 + "<div style=\"padding-top: 20px\">" + END;
+            Result += TAB3 + "<span style=\"font-size:18px; font-weight:bold;\">Detail Of " + GlobalVariables.g_ModelName + "</span>" + END;
             Result += TAB3 + "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" class=\"AdminPageText\">" + END;
             Result += TAB4 + "<tbody>" + END;
+
+            // UserName
+            Result += TAB5 + "<tr>" + END;
+            Result += TAB6 + "<td>" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<font class=\"normal8\">UserName: </font>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB6 + "<td height=\"20\">" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0].BaseInfo.UserName %>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB5 + "</tr>" + END;
+
+            // Email
+            Result += TAB5 + "<tr>" + END;
+            Result += TAB6 + "<td>" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<font class=\"normal8\">Email: </font>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB6 + "<td height=\"20\">" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0].BaseInfo.Email %>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB5 + "</tr>" + END;
+
+            // Role
+            Result += TAB5 + "<tr>" + END;
+            Result += TAB6 + "<td>" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<font class=\"normal8\">Role: </font>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB6 + "<td height=\"20\">" + END;
+            Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
+            Result += TAB8 + "<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0].BaseInfo.Role %>" + END;
+            Result += TAB7 + "</div>" + END;
+            Result += TAB6 + "</td>" + END;
+            Result += TAB5 + "</tr>" + END;
 
             if (_table != null)
             {
@@ -134,7 +150,7 @@ namespace GenerateAdminPage.Classes
                             Result += TAB6 + "</td>" + END;
                             Result += TAB6 + "<td height=\"20\">" + END;
                             Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
-                            Result += TAB8 + "<input type=\"text\" name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" />" + END;
+                            Result += TAB8 + "<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0].ExtraInfo." + _table.Attributes[i].Name +  "%>" + END;
                             Result += TAB7 + "</div>" + END;
                             Result += TAB6 + "</td>" + END;
                             Result += TAB5 + "</tr>" + END;
@@ -148,7 +164,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB6 + "<td height=\"20\">" + END;
             Result += TAB7 + "<div align=\"left\">" + END;
             Result += TAB8 + "<br/>" + END;
-            Result += TAB8 + "<input type=\"submit\" value=\"Add New\" />" + END;
             Result += TAB8 + "<p>" + END;
             Result += TAB8 + "</p>" + END;
             Result += TAB7 + "</div>" + END;
@@ -158,7 +173,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "</tbody>" + END;
             Result += TAB3 + "</table>" + END;
             Result += TAB2 + "</div>" + END;
-            Result += TAB + "<% } %>" + END;
 
             Result += "</asp:Content>" + END;
 
@@ -271,7 +285,7 @@ namespace GenerateAdminPage.Classes
 
             Result += "<% GridPagerProperties properties = new GridPagerProperties()" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "PageSize = WebConfiguration.ProductsPerPage," + END;
+            Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
             Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
             Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
             Result += TAB2 + "Controller = \"Admin\"," + END;
@@ -336,7 +350,7 @@ namespace GenerateAdminPage.Classes
             {
                 Result += "<% GridPagerProperties properties = new GridPagerProperties()" + END;
                 Result += TAB + "{" + END;
-                Result += TAB2 + "PageSize = WebConfiguration.ProductsPerPage," + END;
+                Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
                 Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
                 Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
                 Result += TAB2 + "Controller = \"Admin\"," + END;
@@ -377,14 +391,18 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "objFckEditor.Width = 600;" + END;
                 Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
                 Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
-                Result += TAB3 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.AddedItem){ %>" + END;
-                Result += TAB4 + "alert(\"A new item has been added!\");" + END;
-                Result += TAB3 + "<% } %>" + END;
                 Result += TAB2 + "}" + END;
                 Result += TAB + "</script>" + END;
             }
 
             Result += "<asp:Content ID=\"Content3\" ContentPlaceHolderID=\"MainContent2\" runat=\"server\">" + END;
+
+            Result += TAB + "<script type=\"text/javascript\">" + END;
+            Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.InfoText != null && Model." + GlobalVariables.g_ModelName + "Model.InfoText != \"\"){ %>" + END;
+            Result += TAB3 + "alert('<%= Model." + GlobalVariables.g_ModelName + "Model.InfoText %>');" + END;
+            Result += TAB2 + "<% } %>" + END;
+            Result += TAB + "</script>" + END;
+
             Result += TAB + "<div id=\"PartialDiv\">" + END;
             Result += TAB2 + "<% Html.RenderPartial(\"Templates/TH_List" + GlobalVariables.g_ModelName + "\", Model); %>" + END;
             Result += TAB + "</div>" + END;

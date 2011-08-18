@@ -54,6 +54,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public Get" + GlobalVariables.g_ModelName + "ViewModel GetModel { get; set; }" + END;
             Result += TAB2 + "public Edit" + GlobalVariables.g_ModelName + "ViewModel EditModel { get; set; }" + END;
             Result += TAB2 + "public Add" + GlobalVariables.g_ModelName + "ViewModel AddModel { get; set; }" + END;
+            Result += TAB2 + "public string InfoText { get; set; }" + END;
             Result += TAB + "}" + END;
             Result += GenerateGetViewModel() + END;
             Result += GenerateEditViewModel() + END;
@@ -84,7 +85,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "public class Edit" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB + "{" + END;
             Result += TAB2 + "public Guid ID { get; set; }" + END;
-            Result += TAB2 + "public bool Edited { get; set; }" + END;
             Result += TAB + "}" + END;
 
             return Result;
@@ -97,7 +97,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "public class Add" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB + "{" + END;
             Result += TAB2 + "public " + GlobalVariables.g_ModelName + "Info Info { get; set; }" + END;
-            Result += TAB2 + "public bool Added { get; set; }" + END;
             Result += TAB + "}" + END;
 
             return Result;

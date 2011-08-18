@@ -54,7 +54,8 @@ namespace GenerateAdminPage.Classes
 
             for (int i = 0; i < _db.Tables.Count; i++)
             {
-                if (Utils.TableUsingFCK(_db.Tables[i]) || Utils.TableHaveImageAttribute(_db.Tables[i]))
+                if (_db.Tables[i].Name == GlobalVariables.g_sTableNguoiDung ||
+                    Utils.TableUsingFCK(_db.Tables[i]) || Utils.TableHaveImageAttribute(_db.Tables[i]))
                 {
                     Result += TAB2 + "public " + _db.Tables[i].Name + "ViewModel RetrieveDetailOf" + _db.Tables[i].Name + "ViewModel(DataTransferViewModel dataTransfer)" + END;
                     Result += TAB2 + "{" + END;
@@ -64,11 +65,13 @@ namespace GenerateAdminPage.Classes
                     Result += TAB4 + "{" + END;
 
                     var id = "";
-                    if (_db.Tables[i].Attributes[i].Type == DataType.STRING)
+                    var PK = Utils.GetPK(_db.Tables[i]);
+
+                    if (PK.Type == DataType.STRING)
                     {
                         id = "StrID";
                     }
-                    else if (_db.Tables[i].Attributes[i].Type == DataType.GUILD)
+                    else if (PK.Type == DataType.GUILD)
                     {
                         id = "GuidID";
                     }
@@ -80,12 +83,11 @@ namespace GenerateAdminPage.Classes
                     Result += TAB5 + "LstObjModel = _rep" + _db.Tables[i].Name + ".RetrieveByID(dataTransfer." + id + ")" + END;
 
                     Result += TAB4 + "}," + END;
-                    Result += TAB4 + "AddModel = new Add" + _db.Tables[i].Name + "ViewModel()," + END;
                     Result += TAB4 + "EditModel = new Edit" + _db.Tables[i].Name + "ViewModel" + END;
                     Result += TAB4 + "{" + END;
                     Result += TAB5 + "ID = dataTransfer." + id + "," + END;
-                    Result += TAB5 + "Edited = dataTransfer.Updated" + END;
-                    Result += TAB4 + "}" + END;
+                    Result += TAB4 + "}," + END;
+                    Result += TAB4 + "InfoText = dataTransfer.InfoText" + END;
                     Result += TAB3 + "};" + END;
                     Result += TAB2 + "}" + END;
                 }
@@ -365,7 +367,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "}," + END;
             Result += TAB4 + "AddModel = new Add" + _tbl.Name + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "Added = dataTransfer.Added" + END;
             Result += TAB4 + "}," + END;
             Result += TAB4 + "EditModel = new Edit" + _tbl.Name + "ViewModel" + END;
             Result += TAB4 + "{" + END;
@@ -403,7 +404,8 @@ namespace GenerateAdminPage.Classes
                 }
             }
 
-            Result += TAB4 + "}" + END;
+            Result += TAB4 + "}," + END;
+            Result += TAB4 + "InfoText = dataTransfer.InfoText" + END;
             Result += TAB3 + "};" + END;
             Result += TAB2 + "}" + END;
 
@@ -423,7 +425,7 @@ namespace GenerateAdminPage.Classes
 
             if (GlobalVariables.g_colPaging.Contains(_tbl.Name))
             {
-                Result += TAB5 + "LstObjModel = _rep" + _tbl.Name + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage)," + END;
+                Result += TAB5 + "LstObjModel = _rep" + _tbl.Name + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + _tbl.Name + "PerPage)," + END;
             }
             else
             {
@@ -435,7 +437,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "}," + END;
             Result += TAB4 + "AddModel = new Add" + _tbl.Name + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "Added = dataTransfer.Added" + END;    
             Result += TAB4 + "}," + END;
             Result += TAB4 + "EditModel = new Edit" + _tbl.Name + "ViewModel" + END;
             Result += TAB4 + "{" + END;
@@ -457,8 +458,8 @@ namespace GenerateAdminPage.Classes
                     }
                 }
             }
-            Result += TAB5 + "Edited = dataTransfer.Updated" + END;
-            Result += TAB4 + "}" + END;
+            Result += TAB4 + "}," + END;
+            Result += TAB4 + "InfoText = dataTransfer.InfoText" + END;
             Result += TAB3 + "};" + END;
             Result += TAB2 + "}" + END;
 
@@ -481,12 +482,10 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + "}," + END;
             Result += TAB4 + "AddModel = new Add" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "Added = dataTransfer.Added" + END;
             Result += TAB4 + "}," + END;
             Result += TAB4 + "EditModel = new Edit" + GlobalVariables.g_ModelName + "ViewModel" + END;
             Result += TAB4 + "{" + END;
             Result += TAB5 + "ID = dataTransfer.GuidID," + END;
-            Result += TAB5 + "Edited = dataTransfer.Updated" + END;
             Result += TAB4 + "}" + END;
             Result += TAB3 + "};" + END;
             Result += TAB2 + "}" + END;

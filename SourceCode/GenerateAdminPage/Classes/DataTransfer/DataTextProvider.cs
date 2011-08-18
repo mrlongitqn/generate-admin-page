@@ -55,7 +55,7 @@ namespace GenerateAdminPage.Classes
                 lst = root.SelectSingleNode("paging").SelectNodes("item");
                 for (int i = 0; i < lst.Count; i++)
                 {
-                    GlobalVariables.g_colUsingAjax.Add(lst[i].InnerText);
+                    GlobalVariables.g_colPaging.Add(lst[i].InnerText);
                 }
 
                 lst = root.SelectSingleNode("usingajax").SelectNodes("item");

@@ -62,16 +62,15 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "var data = new DataTransferViewModel" + END;
             Result += TAB3 + "{" + END;
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_DETAILOF_" + _table.Name.ToUpper() + "," + END;
-           
+
             if (lst[0].Type == DataType.STRING)
                 Result += TAB4 + "StrID = " + Utils.BuildPKParams2(lst) + END;
-            else if(lst[0].Type == DataType.INT)
+            else if (lst[0].Type == DataType.INT)
                 Result += TAB4 + "IntID = " + Utils.BuildPKParams2(lst) + END;
-           
+
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;
-
             return Result;
         }
 
@@ -135,18 +134,37 @@ namespace GenerateAdminPage.Classes
         public virtual string GenerateDeleteActionResult()
         {
             string Result = "";
-            var lst = Utils.PKHaveMoreThan1Attribute(_table);
-            Result += TAB2 + "[AcceptVerbs(HttpVerbs.Delete)]" + END;
-            Result += TAB2 + "public JsonResult Delete" + GlobalVariables.g_ModelName + "(" + Utils.BuildPKParams(lst) + ")" + END;
-            Result += TAB2 + "{" + END;
-            Result += TAB3 + "return Json(new{" + END;
-            Result += TAB4 + "Success = _rep" + GlobalVariables.g_ModelName + ".Delete(" + Utils.BuildPKParams2(lst) + ")," + END;
-            Result += TAB4 + "RecordCount = _rep" + GlobalVariables.g_ModelName + ".SelectAll().Count," + END;
-            Result += TAB4 + "DeleteId = " + Utils.BuildPKParams2(lst) + END;
-            Result += TAB3 + "});" + END;
+            if (GlobalVariables.g_colUsingAjax.Contains(GlobalVariables.g_ModelName))
+            {
+                var lst = Utils.PKHaveMoreThan1Attribute(_table);
+                Result += TAB2 + "[AcceptVerbs(HttpVerbs.Delete)]" + END;
+                Result += TAB2 + "public JsonResult Delete" + GlobalVariables.g_ModelName + "(" + Utils.BuildPKParams(lst) + ")" + END;
+                Result += TAB2 + "{" + END;
+                Result += TAB3 + "return Json(new{" + END;
+                Result += TAB4 + "Success = _rep" + GlobalVariables.g_ModelName + ".Delete(" + Utils.BuildPKParams2(lst) + ")," + END;
+                Result += TAB4 + "RecordCount = _rep" + GlobalVariables.g_ModelName + ".SelectAll().Count," + END;
+                Result += TAB4 + "DeleteId = " + Utils.BuildPKParams2(lst) + END;
+                Result += TAB3 + "});" + END;
 
-            Result += TAB2 + "}" + END;
+                Result += TAB2 + "}" + END;
+            }
+            else
+            {
+                var lst = Utils.PKHaveMoreThan1Attribute(_table);
+                Result += TAB2 + "public ActionResult Delete" + GlobalVariables.g_ModelName + "(" + Utils.BuildPKParams(lst) + ", int page = 1)" + END;
+                Result += TAB2 + "{" + END;
 
+                Result += TAB3 + "var result = _rep" + GlobalVariables.g_ModelName + ".Delete(id);" + END;
+                Result += TAB3 + "var data = new DataTransferViewModel" + END;
+                Result += TAB3 + "{" + END;
+                Result += TAB4 + "InfoText = result ? \"Item has been deleted\" : \"Cannot delete item!\"," + END;
+                Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + GlobalVariables.g_ModelName.ToUpper() + "," + END;
+                Result += TAB4 + "CurrentPage = page" + END;
+                Result += TAB3 + "};" + END;
+                Result += TAB3 + "return View(\"Select" + GlobalVariables.g_ModelName + "\", CreateViewModel(data));" + END;
+
+                Result += TAB2 + "}" + END;
+            }
             return Result;
         }
 
@@ -243,7 +261,7 @@ namespace GenerateAdminPage.Classes
             }
             
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + _table.Name.ToUpper() + "," + END;
-            Result += TAB4 + "Added = result" + END;
+            Result += TAB4 + "InfoText = result ? \"New item has been added\" : \"Cannot insert new item\"" + END;
             Result += TAB3 + "};" + END;
             if (!GlobalVariables.g_colUsingFCK.Keys.Contains(_table.Name))
             {
@@ -352,7 +370,7 @@ namespace GenerateAdminPage.Classes
             }
             
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + _table.Name.ToUpper() + "," + END;
-            Result += TAB4 + "Added = result," + END;
+            Result += TAB4 + "InfoText = result ? \"New item has been added\" : \"Cannot insert new item\"" + END;
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(\"Select" + _table.Name + "\", CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;
@@ -416,7 +434,7 @@ namespace GenerateAdminPage.Classes
                 Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
             }
 
-            Result += TAB4 + "Updated = result," + END;
+            Result += TAB4 + "InfoText = result ? \"Item has been updated\" : \"Cannot update this item\"" + END;
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(\"DetailOf" + _table.Name + "\", CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;
@@ -501,7 +519,7 @@ namespace GenerateAdminPage.Classes
                     Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
                 }
 
-                Result += TAB4 + "Updated = result," + END;
+                Result += TAB4 + "InfoText = result ? \"Item has been updated\" : \"Cannot update this item\"" + END;
                 Result += TAB3 + "};" + END;
                 Result += TAB3 + "return View(\"DetailOf" + _table.Name + "\", CreateViewModel(data));" + END;
             }

@@ -134,6 +134,17 @@ namespace GenerateAdminPage.Classes
             return KeySameRefer;
         }
 
+        public static Attribute GetPK(Table _tbl)
+        {
+            for (int i = 0; i < _tbl.Attributes.Count; i++)
+            {
+                if (_tbl.Attributes[i].IsPrimaryKey)
+                    return _tbl.Attributes[i];
+            }
+
+            return null;
+        }
+
         public static string GetPKWith1Attr(Table _tbl)
         {
             string Result = "";

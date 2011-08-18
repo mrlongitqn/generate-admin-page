@@ -290,7 +290,7 @@ namespace GenerateAdminPage.Classes
 
             Result += "<% GridPagerProperties properties = new GridPagerProperties()" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "PageSize = WebConfiguration.ProductsPerPage," + END;
+            Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
             Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
             Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
             Result += TAB2 + "Controller = \"Admin\"," + END;
@@ -346,7 +346,6 @@ namespace GenerateAdminPage.Classes
                         Result += TAB3 + "<td><img src=\"../../../Content/Images/Items/<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetImageAttrName(_table) + " %>\" width=\"90px\" height=\"90px\" /></td>" + END;
                     }
                 }
-
             }
 
             Result += TAB3 + "<td>" + END;
@@ -360,7 +359,15 @@ namespace GenerateAdminPage.Classes
             }
             Result += TAB3 + "</td>" + END;
             Result += TAB3 + "<td>" + END;
-            Result += TAB4 + "<%= Ajax.ActionLink(\"Delete\", \"Delete" + GlobalVariables.g_ModelName + "\", \"Admin\", new { " + Utils.GetPKWith1Attr(_table).ToLower() + " = Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetPKWith1Attr(_table) + " }, new AjaxOptions{Confirm = \"Are you sure you want to Delete it? This action cannot be undone.\", HttpMethod = \"Delete\", OnComplete = \"jsonDelete_OnComplete\"})%>" + END;
+
+            if (GlobalVariables.g_colUsingAjax.Contains(GlobalVariables.g_ModelName))
+            {
+                Result += TAB4 + "<%= Ajax.ActionLink(\"Delete\", \"Delete" + GlobalVariables.g_ModelName + "\", \"Admin\", new { " + Utils.GetPKWith1Attr(_table).ToLower() + " = Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetPKWith1Attr(_table) + " }, new AjaxOptions{Confirm = \"Are you sure you want to Delete it? This action cannot be undone.\", HttpMethod = \"Delete\", OnComplete = \"jsonDelete_OnComplete\"})%>" + END;
+            }
+            else
+            {
+                Result += TAB4 + "<a href=\"../../Admin/Delete" + GlobalVariables.g_ModelName + "?id=<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetPKWith1Attr(_table) + " %>&page=<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage %>\" onclick=\"return confirm('Are you sure you want to Delete it? This action cannot be undone.');\">Delete</a>" + END;
+            }
             Result += TAB3 + "</td>" + END;
             Result += TAB2 + "</tr>" + END;
             Result += TAB + "<% } %>  " + END;
@@ -369,7 +376,7 @@ namespace GenerateAdminPage.Classes
             {
                 Result += "<% GridPagerProperties properties = new GridPagerProperties()" + END;
                 Result += TAB + "{" + END;
-                Result += TAB2 + "PageSize = WebConfiguration.ProductsPerPage," + END;
+                Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
                 Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
                 Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
                 Result += TAB2 + "Controller = \"Admin\"," + END;
@@ -420,23 +427,15 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "objFckEditor.Width = 600;" + END;
                 Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
                 Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
-                Result += TAB3 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.AddModel.Added){ %>" + END;
-                Result += TAB4 + "alert(\"A new item has been added!\");" + END;
-                Result += TAB3 + "<% } %>" + END;
                 Result += TAB2 + "}" + END;
                 Result += TAB + "</script>" + END;
             }
-            else
-            {
-                if (!GlobalVariables.g_colUsingAjax.Contains(GlobalVariables.g_ModelName))
-                {
-                    Result += TAB + "<script type=\"text/javascript\">" + END;
-                    Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.AddModel.Added){ %>" + END;
-                    Result += TAB3 + "alert(\"A new item has been added!\");" + END;
-                    Result += TAB2 + "<% } %>" + END;
-                    Result += TAB + "</script>" + END;
-                }
-            }
+
+            Result += TAB + "<script type=\"text/javascript\">" + END;
+            Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.InfoText != null && Model." + GlobalVariables.g_ModelName + "Model.InfoText != \"\"){ %>" + END;
+            Result += TAB3 + "alert('<%= Model." + GlobalVariables.g_ModelName + "Model.InfoText %>');" + END;
+            Result += TAB2 + "<% } %>" + END;
+            Result += TAB + "</script>" + END;
 
             Result += TAB + "<div id=\"PartialDiv\">" + END;
             Result += TAB2 + "<% Html.RenderPartial(\"Templates/TH_List" + GlobalVariables.g_ModelName + "\", Model); %>" + END;
