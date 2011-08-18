@@ -15,7 +15,6 @@
     <item id="SanPham" attr="HinhMinhHoa" />
   </tablehaveimage>
   <paging>
-    <item>LoaiSanPham</item>
     <item>NhaSanXuat</item>
     <item>LoaiSanPham_NhaSanXuat</item>
     <item>SanPham</item>

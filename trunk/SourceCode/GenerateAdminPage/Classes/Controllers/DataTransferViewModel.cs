@@ -65,8 +65,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public Guid GuidID { get; set; }" + END;
             Result += TAB2 + "public string UserName { get; set; }" + END;
             Result += TAB2 + "public string Role { get; set; }" + END;
-            Result += TAB2 + "public bool Updated { get; set; }" + END;
-            Result += TAB2 + "public bool Added { get; set; }" + END;
+            Result += TAB2 + "public string InfoText { get; set; }" + END;
 
             var lst = GetListOfForeignKey();
             for (int i = 0; i < lst.Count; i++)
@@ -76,8 +75,6 @@ namespace GenerateAdminPage.Classes
 
             Result += TAB2 + "public DataTransferViewModel()" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "Updated = false;" + END;
-            Result += TAB3 + "Added = false;" + END;
             Result += TAB3 + "CurrentPage = 1;" + END;
             for (int i = 0; i < lst.Count; i++)
             {

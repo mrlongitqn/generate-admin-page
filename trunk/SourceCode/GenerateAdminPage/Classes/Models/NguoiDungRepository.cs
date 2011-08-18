@@ -58,6 +58,7 @@ namespace GenerateAdminPage.Classes
             if (_table != null)
             {
                 Result += GenerateSelectByID() + END;
+                Result += GenerateRetrieveByID() + END;
             }
             Result += GenerateDelete() + END;
             Result += GenerateSave() + END;
@@ -298,6 +299,31 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "if (item != null)" + END;
             Result += TAB4 + "return item;" + END;
             Result += TAB3 + "return new " + GlobalVariables.g_ModelName + "();" + END;
+            Result += TAB2 + "}" + END;
+
+            return Result;
+        }
+
+        public string GenerateRetrieveByID()
+        {
+            string Result = "";
+
+            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "Info> RetrieveByID(Guid id)" + END;
+            Result += TAB2 + "{" + END;
+            Result += TAB3 + "var lst = new List<" + GlobalVariables.g_ModelName + "Info>();" + END;
+            Result += TAB3 + "var item = DataContext.Instance." + GlobalVariables.g_ModelName + "s.SingleOrDefault(dmw => dmw." + Utils.GetPKWith1Attr(_table) + " == id);" + END;
+
+            Result += TAB3 + "var baseinfo = new NguoiDungBaseInfo" + END;
+            Result += TAB3 + "{" + END;
+            Result += TAB4 + "ID = item.ID," + END;
+            Result += TAB4 + "UserName = item.aspnet_Users.UserName," + END;
+            Result += TAB4 + "Email = Membership.GetUser(item.ID).Email," + END;
+            Result += TAB4 + "Role = Roles.GetRolesForUser(item.aspnet_Users.UserName)[0]" + END;
+            Result += TAB3 + "};" + END;
+
+            Result += TAB3 + "if (item != null)" + END;
+            Result += TAB4 + "lst.Add(new " + GlobalVariables.g_ModelName + "Info { BaseInfo = baseinfo, ExtraInfo = item });" + END;
+            Result += TAB3 + "return lst;" + END;
             Result += TAB2 + "}" + END;
 
             return Result;

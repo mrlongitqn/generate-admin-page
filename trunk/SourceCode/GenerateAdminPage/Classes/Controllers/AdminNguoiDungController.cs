@@ -239,7 +239,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "var data = new DataTransferViewModel" + END;
             Result += TAB3 + "{" + END;
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + GlobalVariables.g_ModelName.ToUpper() + "," + END;
-            Result += TAB4 + "Added = result," + END;
             Result += TAB4 + "Role = forms.GetValues(\"" + GlobalVariables.g_ModelName + "_OwnerRole\")[0]" + END;
             Result += TAB3 + "};" + END;
             if (TblHaveImgAttr || TblUsingFck)
