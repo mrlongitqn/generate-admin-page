@@ -40,28 +40,44 @@ namespace GenerateAdminPage.Classes
                 GlobalVariables.g_DefaultGuid = Guid.Parse(root.SelectSingleNode("defaultguid").InnerText);
                 GlobalVariables.g_sNoImages = root.SelectSingleNode("noimages").InnerText;
 
-                var lst = root.SelectSingleNode("usingfck").SelectNodes("item");
+                var lst = root.SelectSingleNode("fck").SelectNodes("item");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     GlobalVariables.g_colUsingFCK.Add(lst[i].Attributes["id"].Value, lst[i].Attributes["attr"].Value);
                 }
 
-                lst = root.SelectSingleNode("tablehaveimage").SelectNodes("item");
+                lst = root.SelectSingleNode("image").SelectNodes("item");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     GlobalVariables.g_colTableHaveImage.Add(lst[i].Attributes["id"].Value, lst[i].Attributes["attr"].Value);
                 }
 
-                lst = root.SelectSingleNode("paging").SelectNodes("item");
+                lst = root.SelectSingleNode("pkpaging").SelectNodes("item");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     GlobalVariables.g_colPaging.Add(lst[i].InnerText);
                 }
 
-                lst = root.SelectSingleNode("usingajax").SelectNodes("item");
+                lst = root.SelectSingleNode("ajax").SelectNodes("item");
                 for (int i = 0; i < lst.Count; i++)
                 {
                     GlobalVariables.g_colUsingAjax.Add(lst[i].InnerText);
+                }
+
+                lst = root.SelectSingleNode("detail").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    GlobalVariables.g_colViewDetail.Add(lst[i].InnerText);
+                }
+
+                lst = root.SelectSingleNode("fkpaging").SelectNodes("item");
+                for (int i = 0; i < lst.Count; i++)
+                {
+                    var childFcks = lst[i].SelectNodes("fk");
+                    for (int j = 0; j < childFcks.Count; j++)
+                    {
+                        GlobalVariables.g_colFKPaging.Add(lst[i].Attributes["id"].Value, childFcks[j].InnerText);
+                    }
                 }
                 return true;
             }

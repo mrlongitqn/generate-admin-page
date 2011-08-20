@@ -18,12 +18,20 @@ namespace GenerateAdminPage.Classes
             Result += GenerateSelectActionResultPaging() + END;
             Result += GenerateSelectByFKs() + END;
             Result += GenerateDeleteActionResult() + END;
-            Result += GenerateEditActionResult() + END;
-            Result += GenerateCancelActionResult() + END;
-            Result += GenerateUpdateActionResult() + END;
-            Result += GenerateInsertActionResult() + END;
-            if(TblHaveImgAttr || TblUsingFck)
+
+            if (GlobalVariables.g_colUsingFCK.Keys.Contains(_table.Name) ||
+                     GlobalVariables.g_colViewDetail.Contains(_table.Name))
+            {
                 Result += GenerateDetailActionResult() + END;
+            }
+            else
+            {
+                Result += GenerateEditActionResult() + END;
+                Result += GenerateCancelActionResult() + END;
+            }
+
+            Result += GenerateUpdateActionResult() + END;
+            Result += GenerateInsertActionResult() + END;             
 
             Result += TAB + "}" + END;
 

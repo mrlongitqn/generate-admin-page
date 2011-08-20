@@ -353,6 +353,8 @@ namespace GenerateAdminPage.Classes
                 Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
                 Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
                 Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
+                Result += TAB2 + "TypeOfParam = EnumTypeOfParam." + GlobalVariables.g_ModelName.ToUpper() + "," + END;
+                Result += TAB2 + "StrTransferValue = Roles.GetRolesForUser(Page.User.Identity.Name)[0]," + END;
                 Result += TAB2 + "Controller = \"Admin\"," + END;
                 Result += TAB2 + "ActionName = \"Select" + GlobalVariables.g_ModelName + "Paging\"," + END;
                 Result += TAB2 + "UpdateTargetId = \"PartialDiv\"" + END;
@@ -389,7 +391,7 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "objFckEditor.BasePath = '<%= ResolveUrl(\"~/Scripts/fckeditor/\")%>';" + END;
                 Result += TAB3 + "objFckEditor.Height = 480;" + END;
                 Result += TAB3 + "objFckEditor.Width = 600;" + END;
-                Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
+                Result += TAB3 + "objFckEditor.ToolbarSet = '" + GlobalVariables.g_sNameSpace + ".MyToolbar';" + END;
                 Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
                 Result += TAB2 + "}" + END;
                 Result += TAB + "</script>" + END;

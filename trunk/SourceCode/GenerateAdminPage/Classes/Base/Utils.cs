@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BK.Util;
 
 namespace GenerateAdminPage.Classes
 {
@@ -353,6 +354,12 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
+            var lstAtt = GetForeighKeyList(tbl);
+            if (lstAtt.Count > 1)
+            {
+                return ModelName;
+            }
+
             var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
             var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
             string modifiedModelName = "";
@@ -411,6 +418,39 @@ namespace GenerateAdminPage.Classes
             }
 
             return Result;
+        }
+
+        public static bool ContainsKey(MultimapBK<string, string>.MultimapEnum enumMultiMapItems, string key)
+        {
+            enumMultiMapItems.Reset();
+            while (enumMultiMapItems.MoveNext()) // Line 6
+            {
+                var item = enumMultiMapItems.Current.Value.First;
+                while (item != null)
+                {
+                    if (enumMultiMapItems.Current.Key.ToUpper() == key.ToUpper())
+                    {
+                        return true;
+                    }
+                    item = enumMultiMapItems.Current.Value.Next;
+                }
+            }
+            return false;
+        }
+
+        public static bool ContainsValue(MultimapBK<string, string>.MultimapEnum enumMultiMapItems, string key, string value)
+        {
+            while (enumMultiMapItems.MoveNext())
+            {
+                if (enumMultiMapItems.Current.Key.ToUpper() == key.ToUpper())
+                {
+                    if (enumMultiMapItems.Current.Value.Current.ToUpper() == value.ToUpper())
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

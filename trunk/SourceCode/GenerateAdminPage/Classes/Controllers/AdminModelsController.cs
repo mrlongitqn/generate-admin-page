@@ -100,7 +100,17 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
             var idFK = FK.Name.ToLower();
-            Result += TAB2 + "public ActionResult Select" + GlobalVariables.g_ModelName + "By" + FK.Name.Substring(2) + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page = 1)" + END;
+
+            // Select item by foreign key and paging
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += TAB2 + "public ActionResult Select" + GlobalVariables.g_ModelName + "By" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page = 1)" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public ActionResult Select" + GlobalVariables.g_ModelName + "By" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ")" + END;
+            }
+
             Result += TAB2 + "{" + END;
             Result += TAB3 + "var data = new DataTransferViewModel" + END;
             Result += TAB3 + "{" + END;
@@ -108,9 +118,51 @@ namespace GenerateAdminPage.Classes
             Result += TAB4 + FK.Name + " = " + FK.Name.ToLower() + "," + END;
 
             Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + GlobalVariables.g_ModelName.ToUpper() + "," + END;
-            Result += TAB4 + "CurrentPage = page" + END;
+
+            // Select item by foreign key and paging
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += TAB4 + "CurrentPage = page" + END;
+            }
+
             Result += TAB3 + "};" + END;
             Result += TAB3 + "return View(\"Select" + GlobalVariables.g_ModelName + "\", CreateViewModel(data));" + END;
+            Result += TAB2 + "}" + END;
+
+            return Result;
+        }
+
+        public string GenerateSelectByFKPaging(Attribute FK)
+        {
+            string Result = "";
+            var idFK = FK.Name.ToLower();
+
+            // Select item by foreign key and paging
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += TAB2 + "public ActionResult Select" + GlobalVariables.g_ModelName + "By" + FK.Name + "Paging(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page = 1)" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public ActionResult Select" + GlobalVariables.g_ModelName + "By" + FK.Name + "Paging(" + Utils.GetDataType(FK.Type) + " " + idFK + ")" + END;
+            }
+
+            Result += TAB2 + "{" + END;
+            Result += TAB3 + "var data = new DataTransferViewModel" + END;
+            Result += TAB3 + "{" + END;
+
+            Result += TAB4 + FK.Name + " = " + FK.Name.ToLower() + "," + END;
+
+            Result += TAB4 + "EnumViewModelType = EnumViewModel.ADMIN_" + GlobalVariables.g_ModelName.ToUpper() + "," + END;
+
+            // Select item by foreign key and paging
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += TAB4 + "CurrentPage = page" + END;
+            }
+
+            Result += TAB3 + "};" + END;
+            Result += TAB3 + "return PartialView(\"Templates/TH_List" + GlobalVariables.g_ModelName + "\", CreateViewModel(data));" + END;
             Result += TAB2 + "}" + END;
 
             return Result;
@@ -126,6 +178,7 @@ namespace GenerateAdminPage.Classes
                 {
                     //generate select by foreign key
                     Result += GenerateSelectByFK(_table.Attributes[i]) + END;
+                    Result += GenerateSelectByFKPaging(_table.Attributes[i]) + END;
                 }
             }
             return Result;

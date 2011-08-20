@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using BK.Util;
 
 namespace GenerateAdminPage.Classes
 {
@@ -19,6 +20,8 @@ namespace GenerateAdminPage.Classes
         public static IDictionary<string, string> g_colTableHaveImage = new Dictionary<string, string>();
         public static List<string> g_colPaging = new List<string>();
         public static List<string> g_colUsingAjax = new List<string>();
+        public static List<string> g_colViewDetail = new List<string>();
+        public static MultimapBK<string, string> g_colFKPaging = new MultimapBK<string, string>();
         public static Guid g_DefaultGuid;
         public static string g_sNoImages = "noimages.jpg";
     }

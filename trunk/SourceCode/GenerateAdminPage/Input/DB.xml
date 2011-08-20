@@ -1,28 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configs>
-  <datasource>NHOMIT87-PC\SQLEXPRESS</datasource>
-  <databasename>GenerateAdminPage</databasename>
-  <namespace>TTSoft.MyWeb</namespace>
-  <usertablename>NguoiDung</usertablename>
-  <superadmin>SuperAdmin</superadmin>
-  <admin>Admin</admin>
-  <defaultguid>11112222-1111-1111-1111-111122223333</defaultguid>
-  <noimages>noimages.jpg</noimages>
-  <usingfck>
-    <item id="SanPham" attr="GioiThieu" />
-  </usingfck>
-  <tablehaveimage>
-    <item id="SanPham" attr="HinhMinhHoa" />
-  </tablehaveimage>
-  <paging>
-    <item>NhaSanXuat</item>
-    <item>LoaiSanPham_NhaSanXuat</item>
-    <item>SanPham</item>
-  </paging>
-  <!-- using ajax when excute adding, removing, editing -->
-  <usingajax>
-    <item>NhaSanXuat</item>
-    <item>LoaiSanPham_NhaSanXuat</item>
-    <item>SanPham</item>
-  </usingajax>
+    <datasource>NHOMIT87-PC\SQLEXPRESS</datasource>
+    <databasename>GenerateAdminPage</databasename>
+    <namespace>TTSoft.MyWeb</namespace>
+    <usertablename>NguoiDung</usertablename>
+    <superadmin>SuperAdmin</superadmin>
+    <admin>Admin</admin>
+    <defaultguid>11112222-1111-1111-1111-111122223333</defaultguid>
+    <noimages>noimages.jpg</noimages>
+    <fck>
+        <item id="SanPham" attr="GioiThieu" />
+        <item id="TinTuc" attr="NoiDung" />
+    </fck>
+    <image>
+        <item id="SanPham" attr="HinhMinhHoa" />
+        <item id="TinTuc" attr="HinhMinhHoa" />
+    </image>
+    <pkpaging>
+        <item>NhaSanXuat</item>
+        <item>LoaiSanPham_NhaSanXuat</item>
+        <item>SanPham</item>
+        <item>TinTuc</item>
+        <item>NguoiDung</item>
+    </pkpaging>
+    <fkpaging>
+        <item id="SanPham">
+            <fk>IDLoaiSP_NSX</fk>
+        </item>
+        <item id="TinTuc">
+            <fk>IDLoaiTinTuc</fk>
+        </item>
+    </fkpaging>
+    <!-- using ajax when excute adding, removing, editing -->
+    <ajax>
+        <item>NhaSanXuat</item>
+        <item>LoaiSanPham_NhaSanXuat</item>
+        <item>SanPham</item>
+        <item>TinTuc</item>
+    </ajax>
+    <detail>
+        <item>SanPham</item>
+        <item>NguoiDung</item>
+        <item>TinTuc</item>
+    </detail>
 </configs>

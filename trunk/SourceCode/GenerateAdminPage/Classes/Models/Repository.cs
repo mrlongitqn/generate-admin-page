@@ -68,10 +68,25 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
             var idFK = FK.Name.ToLower();
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "> SelectBy" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page, int pageSize)" + END;
+
+            // Select item by foreign key and paging
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "> SelectBy" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ", int page, int pageSize)" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "> SelectBy" + FK.Name + "(" + Utils.GetDataType(FK.Type) + " " + idFK + ")" + END;
+            }
+
             Result += TAB2 + "{" + END;
             Result += TAB3 + "var lstItem = (from item in DataContext.Instance." + Utils.BuildModelName(_db, _table, GlobalVariables.g_ModelName) + " where item." + FK.Name + " == " + idFK + " select item).ToList();" + END;
-            Result += GeneratePaging();
+
+            // Generate paging items
+            if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), GlobalVariables.g_ModelName))
+            {
+                Result += GeneratePaging();
+            }
 
             Result += TAB3 + "return lstItem;" + END;
             Result += TAB2 + "}" + END;
