@@ -74,22 +74,17 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "objFckEditor.BasePath = '<%= ResolveUrl(\"~/Scripts/fckeditor/\")%>';" + END;
                 Result += TAB3 + "objFckEditor.Height = 480;" + END;
                 Result += TAB3 + "objFckEditor.Width = 600;" + END;
-                Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
+                Result += TAB3 + "objFckEditor.ToolbarSet = '" + GlobalVariables.g_sNameSpace + ".MyToolbar';" + END;
                 Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
-                Result += TAB3 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.EditModel.Edited){ %>" + END;
-                Result += TAB4 + "alert(\"An item has been updated!\");" + END;
-                Result += TAB3 + "<% } %>" + END;
                 Result += TAB2 + "}" + END;
                 Result += TAB + "</script>" + END;
             }
-            else
-            {
-                Result += TAB + "<script type=\"text/javascript\">" + END;
-                Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.EditModel.Edited){ %>" + END;
-                Result += TAB3 + "alert(\"An item has been updated!\");" + END;
-                Result += TAB2 + "<% } %>" + END;
-                Result += TAB + "</script>" + END;
-            }
+
+            Result += TAB + "<script type=\"text/javascript\">" + END;
+            Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.InfoText != null && Model." + GlobalVariables.g_ModelName + "Model.InfoText != \"\"){ %>" + END;
+            Result += TAB3 + "alert('<%= Model." + GlobalVariables.g_ModelName + "Model.InfoText %>');" + END;
+            Result += TAB2 + "<% } %>" + END;
+            Result += TAB + "</script>" + END;
 
             if (TblHaveImgAttr || TblUsingFck)
             {
@@ -142,22 +137,30 @@ namespace GenerateAdminPage.Classes
                         Result += TAB5 + "<tr>" + END;
                         Result += TAB6 + "<td>" + END;
                         Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
-                        Result += TAB8 + "<font class=\"normal8\">" + (_table.Attributes[i].Name.ToUpper().Contains("RUTGON") ? "Nội dung rút gọn hiển thị trên trang chủ" : _table.Attributes[i].Name) + ": </font>" + END;
+                        Result += TAB8 + "<font class=\"normal8\">" + _table.Attributes[i].Name + ": </font>" + END;
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;
                         Result += TAB6 + "<td height=\"20\">" + END;
                         Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
                         if (haveUsingFCK)
                         {
-                            if(GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
+                            if (GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
+                            {
                                 Result += TAB8 + "<%= Html.TextArea(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ")%>" + END;
+                            }
                             else if (_table.Attributes[i].Name.ToUpper().Contains("RUTGON"))
+                            {
                                 Result += TAB8 + "<textarea name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" style=\"width: 590px; height: 80px;\"><%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + "%></textarea>" + END;
+                            }
                             else
-                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ")%>" + END;
+                            {
+                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 590px;\" })%>" + END;
+                            }
                         }
                         else
-                            Result += TAB8 + "<input type=\"text\" name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" value=\"<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + " %>\" />" + END;
+                        {
+                            Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 590px;\" })%>" + END;
+                        }
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;
                         Result += TAB5 + "</tr>" + END;
@@ -319,7 +322,12 @@ namespace GenerateAdminPage.Classes
             {
                 if (!_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsForeignKey ||
                     (_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsIdentify))
-                    Result += TAB3 + "<th>" + _table.Attributes[i].Name + "</th>" + END;
+                {
+                    if (!GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
+                    {
+                        Result += TAB3 + "<th>" + _table.Attributes[i].Name + "</th>" + END;
+                    }
+                }
             }
             Result += TAB3 + "<th></th>" + END;
             Result += TAB3 + "<th></th>" + END;
@@ -339,11 +347,23 @@ namespace GenerateAdminPage.Classes
                 if (!_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsForeignKey ||
                     (_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsIdentify))
                 {
-                    if (_table.Attributes[i].Name != Utils.GetImageAttrName(_table))
-                        Result += TAB3 + "<td><%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + " %></td>" + END;
-                    else
+                    if (!GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
                     {
-                        Result += TAB3 + "<td><img src=\"../../../Content/Images/Items/<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetImageAttrName(_table) + " %>\" width=\"90px\" height=\"90px\" /></td>" + END;
+                        if (_table.Attributes[i].Name != Utils.GetImageAttrName(_table))
+                        {
+                            if (_table.Attributes[i].Name.ToUpper().Contains("RUTGON"))
+                            {
+                                Result += TAB3 + "<td><%= Html.Truncate(Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + ", WebConfiguration." + GlobalVariables.g_ModelName + "SortDescription) %></td>" + END;
+                            }
+                            else
+                            {
+                                Result += TAB3 + "<td><%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + " %></td>" + END;
+                            }
+                        }
+                        else
+                        {
+                            Result += TAB3 + "<td><img src=\"../../../Content/Images/Items/<%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + Utils.GetImageAttrName(_table) + " %>\" width=\"60px\" height=\"60px\" /></td>" + END;
+                        }
                     }
                 }
             }
@@ -379,8 +399,19 @@ namespace GenerateAdminPage.Classes
                 Result += TAB2 + "PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage," + END;
                 Result += TAB2 + "RecordCount = Model." + GlobalVariables.g_ModelName + "Model.GetModel.TotalItem," + END;
                 Result += TAB2 + "CurrentPageIndex = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage," + END;
+
+                if (Utils.GetForeighKeyList(_table).Count > 0)
+                {
+                    Result += TAB2 + "TypeOfParam = EnumTypeOfParam." + GlobalVariables.g_ModelName.ToUpper() + "," + END;
+                    Result += TAB2 + "TransferValue = Model." + GlobalVariables.g_ModelName + "Model.ReferKeys." + Utils.GetForeighKeyList(_table)[0].Name + "," + END;
+                    Result += TAB2 + "ActionName = \"Select" + GlobalVariables.g_ModelName + "By" + Utils.GetForeighKeyList(_table)[0].Name + "Paging\"," + END;
+                }
+                else
+                {
+                    Result += TAB2 + "ActionName = \"Select" + GlobalVariables.g_ModelName + "Paging\"," + END;
+                }
+
                 Result += TAB2 + "Controller = \"Admin\"," + END;
-                Result += TAB2 + "ActionName = \"Select" + GlobalVariables.g_ModelName + "Paging\"," + END;
                 Result += TAB2 + "UpdateTargetId = \"PartialDiv\"" + END;
                 Result += TAB + "};" + END;
                 Result += "%>" + END;
@@ -425,7 +456,7 @@ namespace GenerateAdminPage.Classes
                 Result += TAB3 + "objFckEditor.BasePath = '<%= ResolveUrl(\"~/Scripts/fckeditor/\")%>';" + END;
                 Result += TAB3 + "objFckEditor.Height = 480;" + END;
                 Result += TAB3 + "objFckEditor.Width = 600;" + END;
-                Result += TAB3 + "objFckEditor.ToolbarSet = 'My" + GlobalVariables.g_sNameSpace + "Toolbar';" + END;
+                Result += TAB3 + "objFckEditor.ToolbarSet = '" + GlobalVariables.g_sNameSpace + ".MyToolbar';" + END;
                 Result += TAB3 + "objFckEditor.ReplaceTextarea();" + END;
                 Result += TAB2 + "}" + END;
                 Result += TAB + "</script>" + END;
@@ -492,7 +523,7 @@ namespace GenerateAdminPage.Classes
                         Result += TAB5 + "<tr>" + END;
                         Result += TAB6 + "<td>" + END;
                         Result += TAB7 + "<div align=\"left\" style=\"padding-top:15px\">" + END;
-                        Result += TAB8 + "<font class=\"normal8\">" + (_table.Attributes[i].Name.ToUpper().Contains("RUTGON") ? "Nội dung rút gọn hiển thị trên trang chủ" : _table.Attributes[i].Name) + ": </font>" + END;
+                        Result += TAB8 + "<font class=\"normal8\">" + _table.Attributes[i].Name + ": </font>" + END;
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;
                         Result += TAB6 + "<td height=\"20\">" + END;
@@ -500,16 +531,15 @@ namespace GenerateAdminPage.Classes
 
                         if (haveUsingFCK)
                         {
-                            if(GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
+                            if (GlobalVariables.g_colUsingFCK.Values.Contains(_table.Attributes[i].Name))
                                 Result += TAB8 + "<%= Html.TextArea(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\")%>" + END;
-                            else if(_table.Attributes[i].Name.ToUpper().Contains("RUTGON"))
+                            else if (_table.Attributes[i].Name.ToUpper().Contains("RUTGON"))
                                 Result += TAB8 + "<textarea name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" style=\"width: 590px; height: 80px;\"></textarea>" + END;
                             else
-                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\")%>" + END;
-
+                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", \"\", new { @style = \"width: 590px;\" })%>" + END;
                         }
                         else
-                            Result += TAB8 + "<input type=\"text\" name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" />" + END;
+                            Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", \"\", new { @style = \"width: 590px;\" })%>" + END;
 
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;

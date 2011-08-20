@@ -346,7 +346,16 @@ namespace GenerateAdminPage.Classes
                                 Result += TAB3 + "else if (dataTransfer." + _tbl.Attributes[i].Name + " != Guid.Parse(\"" + GlobalVariables.g_DefaultGuid + "\"))" + END;
                         }
                         Result += TAB3 + "{" + END;
-                        Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ", dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage);" + END;
+
+                        if (Utils.ContainsKey(GlobalVariables.g_colFKPaging.GetEnumerator(), _tbl.Name))
+                        {
+                            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ", dataTransfer.CurrentPage, WebConfiguration.Num" + _tbl.Name + "PerPage);" + END;
+                        }
+                        else
+                        {
+                            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ");" + END;
+                        }
+
                         Result += TAB4 + "totalitem = _rep" + _tbl.Name + ".GetTotalItemBy" + _tbl.Attributes[i].Name + "(dataTransfer." + _tbl.Attributes[i].Name + ");" + END;
                         Result += TAB3 + "}" + END;
                     }
@@ -354,7 +363,7 @@ namespace GenerateAdminPage.Classes
             }
             Result += TAB3 + "else" + END;
             Result += TAB3 + "{" + END;
-            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectPaging" + "(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage);" + END;
+            Result += TAB4 + "lst = _rep" + _tbl.Name + ".SelectPaging" + "(dataTransfer.CurrentPage, WebConfiguration.Num" + _tbl.Name + "PerPage);" + END;
             Result += TAB4 + "totalitem = _rep" + _tbl.Name + ".GetTotalItem();" + END;
             Result += TAB3 + "}" + END;
             Result += TAB3 + "return new " + _tbl.Name + "ViewModel" + END;
