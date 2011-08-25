@@ -352,72 +352,73 @@ namespace GenerateAdminPage.Classes
 
         public static string BuildModelName(DataBase db, Table tbl, string ModelName)
         {
-            string Result = "";
+			return ModelName;
+            // string Result = "";
 
-            var lstAtt = GetForeighKeyList(tbl);
-            if (lstAtt.Count > 1)
-            {
-                return ModelName;
-            }
+            // var lstAtt = GetForeighKeyList(tbl);
+            // if (lstAtt.Count > 1)
+            // {
+                // return ModelName;
+            // }
 
-            var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
-            var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
-            string modifiedModelName = "";
+            // var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
+            // var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
+            // string modifiedModelName = "";
 
-            if (TwoLastChars.Contains("CE") ||
-                TwoLastChars.Contains("CH") ||
-                TwoLastChars.Contains("GE") ||
-                TwoLastChars.Contains("SH") ||
-                TwoLastChars.Contains("SS") ||
-                LastChars.Contains("S") ||
-                LastChars.Contains("X") ||
-                LastChars.Contains("Z"))
-            {
-                Result = ModelName + "es";
-            }
-            else if (LastChars.Contains("Y"))
-            {
-                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                {
-                    Result = ModelName + "s";
-                }
-                else
-                {
-                    modifiedModelName = ModelName.Substring(0, ModelName.Length - 1);
-                    Result = modifiedModelName + "ies";
-                }
-            }
-            else if (LastChars.Contains("O"))
-            {
-                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                {
-                    Result = ModelName + "s";
-                }
-                else
-                {
-                    Result = ModelName + "es";
-                }
-            }
-            else if (LastChars.Contains("U"))
-            {
-                var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                {
-                    Result = ModelName + "x";
-                }
-                else
-                {
-                    Result = ModelName + "s";
-                }
-            }
-            else
-            {
-                Result = ModelName + "s";
-            }
+            // if (TwoLastChars.Contains("CE") ||
+                // TwoLastChars.Contains("CH") ||
+                // TwoLastChars.Contains("GE") ||
+                // TwoLastChars.Contains("SH") ||
+                // TwoLastChars.Contains("SS") ||
+                // LastChars.Contains("S") ||
+                // LastChars.Contains("X") ||
+                // LastChars.Contains("Z"))
+            // {
+                // Result = ModelName + "es";
+            // }
+            // else if (LastChars.Contains("Y"))
+            // {
+                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
+                // {
+                    // Result = ModelName + "s";
+                // }
+                // else
+                // {
+                    // modifiedModelName = ModelName.Substring(0, ModelName.Length - 1);
+                    // Result = modifiedModelName + "ies";
+                // }
+            // }
+            // else if (LastChars.Contains("O"))
+            // {
+                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
+                // {
+                    // Result = ModelName + "s";
+                // }
+                // else
+                // {
+                    // Result = ModelName + "es";
+                // }
+            // }
+            // else if (LastChars.Contains("U"))
+            // {
+                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
+                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
+                // {
+                    // Result = ModelName + "x";
+                // }
+                // else
+                // {
+                    // Result = ModelName + "s";
+                // }
+            // }
+            // else
+            // {
+                // Result = ModelName + "s";
+            // }
 
-            return Result;
+            // return Result;
         }
 
         public static bool ContainsKey(MultimapBK<string, string>.MultimapEnum enumMultiMapItems, string key)
