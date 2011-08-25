@@ -81,6 +81,7 @@ namespace GenerateAdminPage.Classes
             }
 
             Result += TAB + "<script type=\"text/javascript\">" + END;
+            Result += GenerateDatePickerJS();
             Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.InfoText != null && Model." + GlobalVariables.g_ModelName + "Model.InfoText != \"\"){ %>" + END;
             Result += TAB3 + "alert('<%= Model." + GlobalVariables.g_ModelName + "Model.InfoText %>');" + END;
             Result += TAB2 + "<% } %>" + END;
@@ -154,12 +155,34 @@ namespace GenerateAdminPage.Classes
                             }
                             else
                             {
-                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 590px;\" })%>" + END;
+                                if (_table.Attributes[i].Type == DataType.DATETIME)
+                                {
+                                    Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", String.Format(\"{0:dd/MM/yyyy}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + "), new { @style = \"width: 290px;\" })%>" + END;
+                                }
+                                else if (_table.Attributes[i].Type == DataType.LONG)
+                                {
+                                    Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", String.Format(\"{0:#,##0;Nothing}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + "), new { @style = \"width: 290px;\" })%>" + END;
+                                }
+                                else
+                                {
+                                    Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 290px;\" })%>" + END;
+                                }
                             }
                         }
                         else
                         {
-                            Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 590px;\" })%>" + END;
+                            if (_table.Attributes[i].Type == DataType.DATETIME)
+                            {
+                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", String.Format(\"{0:dd/MM/yyyy}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + "), new { @style = \"width: 290px;\" })%>" + END;
+                            }
+                            else if (_table.Attributes[i].Type == DataType.LONG)
+                            {
+                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", String.Format(\"{0:#,##0;Nothing}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + "), new { @style = \"width: 290px;\" })%>" + END;
+                            }
+                            else
+                            {
+                                Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[0]." + _table.Attributes[i].Name + ", new { @style = \"width: 290px;\" })%>" + END;
+                            }
                         }
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;
@@ -357,7 +380,18 @@ namespace GenerateAdminPage.Classes
                             }
                             else
                             {
-                                Result += TAB3 + "<td><%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + " %></td>" + END;
+                                if (_table.Attributes[i].Type == DataType.DATETIME)
+                                {
+                                    Result += TAB3 + "<td><%= String.Format(\"{0:dd/MM/yyyy}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + ") %></td>" + END;
+                                }
+                                else if (_table.Attributes[i].Type == DataType.LONG)
+                                {
+                                    Result += TAB3 + "<td><%= String.Format(\"{0:#,##0;Nothing}\", Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + ") %></td>" + END;
+                                }
+                                else
+                                {
+                                    Result += TAB3 + "<td><%= Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i]." + _table.Attributes[i].Name + " %></td>" + END;
+                                }
                             }
                         }
                         else
@@ -463,6 +497,7 @@ namespace GenerateAdminPage.Classes
             }
 
             Result += TAB + "<script type=\"text/javascript\">" + END;
+            Result += GenerateDatePickerJS();
             Result += TAB2 + "<% if (Model." + GlobalVariables.g_ModelName + "Model.InfoText != null && Model." + GlobalVariables.g_ModelName + "Model.InfoText != \"\"){ %>" + END;
             Result += TAB3 + "alert('<%= Model." + GlobalVariables.g_ModelName + "Model.InfoText %>');" + END;
             Result += TAB2 + "<% } %>" + END;
@@ -536,10 +571,12 @@ namespace GenerateAdminPage.Classes
                             else if (_table.Attributes[i].Name.ToUpper().Contains("RUTGON"))
                                 Result += TAB8 + "<textarea name=\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\" style=\"width: 590px; height: 80px;\"></textarea>" + END;
                             else
+                            {
                                 Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", \"\", new { @style = \"width: 590px;\" })%>" + END;
+                            }
                         }
                         else
-                            Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", \"\", new { @style = \"width: 590px;\" })%>" + END;
+                            Result += TAB8 + "<%= Html.TextBox(\"" + GlobalVariables.g_ModelName + "_" + _table.Attributes[i].Name + "\", \"\", new { @style = \"width: 290px;\" })%>" + END;
 
                         Result += TAB7 + "</div>" + END;
                         Result += TAB6 + "</td>" + END;
@@ -568,6 +605,35 @@ namespace GenerateAdminPage.Classes
 
             Result += "</asp:Content>" + END;
 
+            return Result;
+        }
+
+        public string GenerateDatePickerJS()
+        {
+            string Result = "";
+            var exist = false;
+
+            for (int i = 0; i < _table.Attributes.Count; i++)
+            {
+                if (_table.Attributes[i].Type == DataType.DATETIME)
+                {
+                    exist = true;
+                    break;
+                }
+            }
+
+            if (exist)
+            {
+                Result += TAB2 + "$(document).ready(function () {" + END;
+                for (int i = 0; i < _table.Attributes.Count; i++)
+                {
+                    if (_table.Attributes[i].Type == DataType.DATETIME)
+                    {
+                        Result += TAB3 + "$(\"#" + _table.Name + "_" + _table.Attributes[i].Name + "\").datepicker();" + END;
+                    }
+                }
+                Result += TAB2 + "});" + END;
+            }
             return Result;
         }
     }
