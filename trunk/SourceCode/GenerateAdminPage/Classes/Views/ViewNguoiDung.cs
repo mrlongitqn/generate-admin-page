@@ -338,7 +338,7 @@ namespace GenerateAdminPage.Classes
                 Result += TAB4 + "</a>" + END;
             }
             else
-                Result += TAB4 + "<%= Ajax.ActionLink(\"Edit\", \"Edit" + GlobalVariables.g_ModelName + "\", \"Admin\", new { page = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage, id = Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i].ID }, new AjaxOptions { UpdateTargetId = \"PartialDiv\" })%>" + END;
+                Result += TAB4 + "<%= Ajax.ActionLink(\"Edit\", \"Edit" + GlobalVariables.g_ModelName + "\", \"Admin\", new { page = Model." + GlobalVariables.g_ModelName + "Model.GetModel.CurrentPage, id = Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i].BaseInfo.ID }, new AjaxOptions { UpdateTargetId = \"PartialDiv\" })%>" + END;
             Result += TAB3 + "</td>" + END;
             Result += TAB3 + "<td>" + END;
             Result += TAB4 + "<%= Ajax.ActionLink(\"Delete\", \"Delete" + GlobalVariables.g_ModelName + "\", \"Admin\", new { id = Model." + GlobalVariables.g_ModelName + "Model.GetModel.LstObjModel[i].BaseInfo.ID, role = Roles.GetRolesForUser(Page.User.Identity.Name)[0] }, new AjaxOptions{Confirm = \"Are you sure you want to Delete it? This action cannot be undone.\", HttpMethod = \"Delete\", OnComplete = \"jsonDelete_OnComplete\"})%>" + END;

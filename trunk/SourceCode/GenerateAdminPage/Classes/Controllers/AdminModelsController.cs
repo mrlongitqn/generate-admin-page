@@ -273,7 +273,16 @@ namespace GenerateAdminPage.Classes
                     continue;
                 var attr = "";
                 if (Utils.GetDataType(_table.Attributes[i].Type) != "string")
-                    attr = Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                {
+                    if (_table.Attributes[i].Type == DataType.DATETIME)
+                    {
+                        attr = _table.Attributes[i].Name.ToLower() + " == \"\" ? DateTime.Now : " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                    }
+                    else
+                    {
+                        attr = Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                    }
+                }
                 else
                     attr = _table.Attributes[i].Name.ToLower();
 
@@ -301,7 +310,7 @@ namespace GenerateAdminPage.Classes
                 }
                 else if (lst[i].Type == DataType.DATETIME)
                 {
-                    Result += TAB4 + lst[i].Name + " = DateTime.Parse(" + lst[i].Name.ToLower() + ")," + END;
+                    Result += TAB4 + lst[i].Name + " = " + lst[i].Name.ToLower() + " == \"\" ? DateTime.Now : DateTime.Parse(" + lst[i].Name.ToLower() + ")," + END;
                 }
                 else if (lst[i].Type == DataType.INT)
                 {
@@ -370,7 +379,16 @@ namespace GenerateAdminPage.Classes
                     continue;
                 var attr = "";
                 if (Utils.GetDataType(_table.Attributes[i].Type) != "string")
-                    attr = Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                {
+                    if (_table.Attributes[i].Type == DataType.DATETIME)
+                    {
+                        attr = _table.Attributes[i].Name.ToLower() + " == \"\" ? DateTime.Now : " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                    }
+                    else
+                    {
+                        attr = Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ")";
+                    }
+                }
                 else
                     attr = _table.Attributes[i].Name.ToLower();
 
@@ -410,7 +428,7 @@ namespace GenerateAdminPage.Classes
                 }
                 else if (lst[i].Type == DataType.DATETIME)
                 {
-                    Result += TAB4 + lst[i].Name + " = DateTime.Parse(" + lst[i].Name.ToLower() + ")," + END;
+                    Result += TAB4 + lst[i].Name + " = " + lst[i].Name.ToLower() + " == \"\" ? DateTime.Now : DateTime.Parse(" + lst[i].Name.ToLower() + ")," + END;
                 }
                 else if (lst[i].Type == DataType.INT)
                 {
@@ -459,9 +477,20 @@ namespace GenerateAdminPage.Classes
                 if (_table.Attributes[i].Name.ToLower() != "id")
                 {
                     if (_table.Attributes[i].Type != DataType.STRING)
-                        Result += TAB3 + "editItem." + _table.Attributes[i].Name + " = " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ");" + END;
+                    {
+                        if (_table.Attributes[i].Type == DataType.DATETIME)
+                        {
+                            Result += TAB3 + "editItem." + _table.Attributes[i].Name + " = " + _table.Attributes[i].Name.ToLower() + " == \"\" ? DateTime.Now :" + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ");" + END;
+                        }
+                        else
+                        {
+                            Result += TAB3 + "editItem." + _table.Attributes[i].Name + " = " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ".Replace(\".\", \"\").Replace(\",\", \"\"));" + END;
+                        }
+                    }
                     else
+                    {
                         Result += TAB3 + "editItem." + _table.Attributes[i].Name + " = " + _table.Attributes[i].Name.ToLower() + ";" + END;
+                    }
                 }
             }
             Result += TAB3 + "var result = false;" + END;
@@ -484,7 +513,7 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ")," + END;
+                Result += TAB4 + "IntID = " + Utils.GetDataType(lst[0].Type) + ".Parse(" + Utils.BuildPKParams2(lst) + ".Replace(\".\", \"\").Replace(\",\", \"\"))," + END;
             }
 
             Result += TAB4 + "InfoText = result ? \"Item has been updated\" : \"Cannot update this item\"" + END;
@@ -527,7 +556,16 @@ namespace GenerateAdminPage.Classes
                     else
                     {
                         if (_table.Attributes[i].Type != DataType.STRING)
-                            Result += TAB3 + _table.Name.ToLower() + "." + _table.Attributes[i].Name + " = " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ");" + END;
+                        {
+                            if (_table.Attributes[i].Type == DataType.DATETIME)
+                            {
+                                Result += TAB3 + "editItem." + _table.Attributes[i].Name + " = " + _table.Attributes[i].Name.ToLower() + " == \"\" ? DateTime.Now :" + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ");" + END;
+                            }
+                            else
+                            {
+                                Result += TAB3 + _table.Name.ToLower() + "." + _table.Attributes[i].Name + " = " + Utils.GetDataType(_table.Attributes[i].Type) + ".Parse(" + _table.Attributes[i].Name.ToLower() + ".Replace(\".\", \"\").Replace(\",\", \"\"));" + END;
+                            }
+                        }
                         else
                             Result += TAB3 + _table.Name.ToLower() + "." + _table.Attributes[i].Name + " = " + _table.Attributes[i].Name.ToLower() + ";" + END;
                     }
