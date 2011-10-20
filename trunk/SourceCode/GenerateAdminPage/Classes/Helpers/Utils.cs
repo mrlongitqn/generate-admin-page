@@ -4,8 +4,12 @@ using System.Linq;
 using System.Text;
 using BK.Util;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.Helpers
 {
+    #region USING
+    using GenerateAdminPage.Classes.DBStructure;
+    #endregion
+
     public static class Utils
     {
         public static string END = Environment.NewLine;
@@ -21,42 +25,6 @@ namespace GenerateAdminPage.Classes
                 }
             }
             return false;
-        }
-
-        public static string GetImageAttrName(Table _tbl)
-        {
-            try
-            {
-                return GlobalVariables.g_colTableHaveImage[_tbl.Name];
-            }
-            catch
-            {
-                return "";
-            }
-        }
-
-        public static bool TableHaveImageAttribute(Table _tbl)
-        {
-            try
-            {
-                return GlobalVariables.g_colTableHaveImage.ContainsKey(_tbl.Name);
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        public static bool TableUsingFCK(Table _tbl)
-        {
-            try
-            {
-                return GlobalVariables.g_colUsingFCK.ContainsKey(_tbl.Name);
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         public static bool TableHaveForeignKey(Table _tbl)
@@ -171,7 +139,7 @@ namespace GenerateAdminPage.Classes
                     }
                 }
             }
-            
+
             return Result;
         }
 
@@ -217,6 +185,23 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
+        public static string BuildCastingPK(Table _tbl)
+        {
+            string Result = "";
+            var pk = GetPK(_tbl);
+
+            if (pk.Type == DataType.STRING)
+            {
+                Result += pk.Name;
+            }
+            else
+            {
+                Result += GetDataType(pk.Type) + ".Parse(txt" + pk.Name + ".Text)";
+            }
+
+            return Result;
+        }
+
         public static string BuildCastingPKParams(List<Attribute> lst)
         {
             string Result = "";
@@ -225,7 +210,7 @@ namespace GenerateAdminPage.Classes
             {
                 if (i < lst.Count - 1)
                 {
-                    if(lst[i].Type != DataType.STRING)
+                    if (lst[i].Type != DataType.STRING)
                         Result += Utils.GetDataType(lst[i].Type) + ".Parse(" + lst[i].Name.ToLower() + "), ";
                     else
                         Result += lst[i].Name.ToLower() + ", ";
@@ -247,7 +232,7 @@ namespace GenerateAdminPage.Classes
             for (int i = 0; i < _db.Tables.Count; i++)
             {
                 //Consider other table
-                if (_db.Tables[i].Name != GlobalVariables.g_ModelName)
+                if (_db.Tables[i].Name != _table.Name)
                 {
                     if (Utils.IsForeignKeyReferTo(_db.Tables[i], _table))
                     {
@@ -261,13 +246,13 @@ namespace GenerateAdminPage.Classes
         public static string BuildFKReferTo(DataBase _db, Table _table, string tab)
         {
             string Result = "";
-            
+
             var lst = new List<string>();
-            
+
             for (int i = 0; i < _db.Tables.Count; i++)
             {
                 //Consider other table
-                if (_db.Tables[i].Name != GlobalVariables.g_ModelName)
+                if (_db.Tables[i].Name != _table.Name)
                 {
                     if (Utils.IsForeignKeyReferTo(_db.Tables[i], _table))
                     {
@@ -280,11 +265,11 @@ namespace GenerateAdminPage.Classes
             {
                 if (i < lst.Count - 1)
                 {
-                    Result += tab + "Lst" + lst[i] + "ReferObjModel = objItem." + lst[i] + "s.ToList(), " + END; 
+                    Result += tab + "Lst" + lst[i] + "ReferObjModel = objItem." + lst[i] + ".ToList(), " + END;
                 }
                 else
                 {
-                    Result += tab + "Lst" + lst[i] + "ReferObjModel = objItem." + lst[i] + "s.ToList()"; 
+                    Result += tab + "Lst" + lst[i] + "ReferObjModel = objItem." + lst[i] + ".ToList()";
                 }
             }
 
@@ -332,6 +317,9 @@ namespace GenerateAdminPage.Classes
 
                 case DataType.LONG:
                     return "long";
+
+                case DataType.IMAGE:
+                    return "byte[]";
             }
 
             return "string";
@@ -352,73 +340,7 @@ namespace GenerateAdminPage.Classes
 
         public static string BuildModelName(DataBase db, Table tbl, string ModelName)
         {
-			return ModelName;
-            // string Result = "";
-
-            // var lstAtt = GetForeighKeyList(tbl);
-            // if (lstAtt.Count > 1)
-            // {
-                // return ModelName;
-            // }
-
-            // var TwoLastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2);
-            // var LastChars = ModelName.Trim().ToUpper().Substring(ModelName.Length - 1);
-            // string modifiedModelName = "";
-
-            // if (TwoLastChars.Contains("CE") ||
-                // TwoLastChars.Contains("CH") ||
-                // TwoLastChars.Contains("GE") ||
-                // TwoLastChars.Contains("SH") ||
-                // TwoLastChars.Contains("SS") ||
-                // LastChars.Contains("S") ||
-                // LastChars.Contains("X") ||
-                // LastChars.Contains("Z"))
-            // {
-                // Result = ModelName + "es";
-            // }
-            // else if (LastChars.Contains("Y"))
-            // {
-                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                // {
-                    // Result = ModelName + "s";
-                // }
-                // else
-                // {
-                    // modifiedModelName = ModelName.Substring(0, ModelName.Length - 1);
-                    // Result = modifiedModelName + "ies";
-                // }
-            // }
-            // else if (LastChars.Contains("O"))
-            // {
-                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                // {
-                    // Result = ModelName + "s";
-                // }
-                // else
-                // {
-                    // Result = ModelName + "es";
-                // }
-            // }
-            // else if (LastChars.Contains("U"))
-            // {
-                // var beforeY = ModelName.Trim().ToUpper().Substring(ModelName.Length - 2, 1);
-                // if (beforeY == "E" || beforeY == "U" || beforeY == "O" || beforeY == "A" || beforeY == "I")
-                // {
-                    // Result = ModelName + "x";
-                // }
-                // else
-                // {
-                    // Result = ModelName + "s";
-                // }
-            // }
-            // else
-            // {
-                // Result = ModelName + "s";
-            // }
-
-            // return Result;
+            return ModelName;
         }
 
         public static bool ContainsKey(MultimapBK<string, string>.MultimapEnum enumMultiMapItems, string key)
@@ -452,6 +374,249 @@ namespace GenerateAdminPage.Classes
                 }
             }
             return false;
+        }
+
+        public static string GetStrAttributeStartWithTen(Table _tbl)
+        {
+            var result = "";
+            foreach (var item in _tbl.Attributes)
+            {
+                if (item.Name.ToUpper().StartsWith("TEN"))
+                {
+                    result = item.Name;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public static Attribute GetAttributeStartWithTen(Table _tbl)
+        {
+            Attribute result = null;
+            foreach (var item in _tbl.Attributes)
+            {
+                if (item.Name.ToUpper().StartsWith("TEN"))
+                {
+                    result = item;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        public static Table GetTableByName(DataBase db, string name)
+        {
+            for (int i = 0; i < db.Tables.Count; i++)
+            {
+                if (db.Tables[i].Name.ToUpper() == name.ToUpper())
+                {
+                    return db.Tables[i];
+                }
+            }
+            return null;
+        }
+
+        public static string BuildListColumnData(List<Attribute> lst)
+        {
+            string Result = "";
+
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (i < lst.Count - 1)
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        Result += "String.Format(\"{0:dd/MM/yyyy}\", lstItem[i]." + lst[i].Name + "), ";
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        Result += "lstItem[i]." + lst[i].Name + " == null ? \"\" : (lstItem[i]." + lst[i].Name + " == true ? \"Nam\" : \"Nữ\"), ";
+                    }
+                    else
+                    {
+                        Result += "lstItem[i]." + lst[i].Name + ", ";
+                    }
+                }
+                else
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        Result += "String.Format(\"{0:dd/MM/yyyy}\", lstItem[i]." + lst[i].Name + ")";
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        Result += "lstItem[i]." + lst[i].Name + " == null ? \"\" : (lstItem[i]." + lst[i].Name + " == true ? \"Nam\" : \"Nữ\")";
+                    }
+                    else
+                    {
+                        Result += "lstItem[i]." + lst[i].Name;
+                    }
+                }
+            }
+
+            return Result;
+        }
+
+        public static string BuildListColumnData2(List<Attribute> lst)
+        {
+            string Result = "";
+
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (i < lst.Count - 1)
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].Name + "), ";
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        Result += "item." + lst[i].Name + " = 1, ";
+                    }
+                    else
+                    {
+                        Result += "item." + lst[i].Name + ", ";
+                    }
+                }
+                else
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].Name + ")";
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        Result += "item." + lst[i].Name + " = 1";
+                    }
+                    else
+                    {
+                        Result += "item." + lst[i].Name;
+                    }
+                }
+            }
+
+            return Result;
+        }
+
+        public static string BuildListColumnData3(List<Attribute> lst)
+        {
+            string Result = "";
+
+            for (int i = 0; i < lst.Count; i++)
+            {
+                if (i < lst.Count - 1)
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].ReferTo + "." + lst[i].Name + "), ";
+                        }
+                        else
+                        {
+                            Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].Name + "), ";
+                        }
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "item." + lst[i].ReferTo + "." + lst[i].Name + " = 1, ";
+                        }
+                        else
+                        {
+                            Result += "item." + lst[i].Name + " = 1, ";
+                        }
+                    }
+                    else
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "item." + lst[i].ReferTo + "." + lst[i].Name + ", ";
+                        }
+                        else
+                        {
+                            Result += "item." + lst[i].Name + ", ";
+                        }
+
+                    }
+                }
+                else
+                {
+                    if (lst[i].Type == DataType.DATETIME)
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].ReferTo + "." + lst[i].Name + ")";
+                        }
+                        else
+                        {
+                            Result += "String.Format(\"{0:dd/MM/yyyy}\", item." + lst[i].Name + ")";
+                        }
+                    }
+                    else if (lst[i].Type == DataType.BOOL)
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "item." + lst[i].ReferTo + "." + lst[i].Name + " = 1";
+                        }
+                        else
+                        {
+                            Result += "item." + lst[i].Name + " = 1";
+                        }
+                    }
+                    else
+                    {
+                        if (lst[i].ReferTo != "" && !lst[i].IsForeignKey)
+                        {
+                            Result += "item." + lst[i].ReferTo + "." + lst[i].Name;
+                        }
+                        else
+                        {
+                            Result += "item." + lst[i].Name;
+                        }
+
+                    }
+                }
+            }
+
+            return Result;
+        }
+
+        public static bool TableUsingFCK(Table _tbl)
+        {
+            try
+            {
+                return GlobalVariables.g_colUsingFCK.ContainsKey(_tbl.Name);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool TableHaveImageAttribute(Table _tbl)
+        {
+            try
+            {
+                return GlobalVariables.g_colTableHaveImage.ContainsKey(_tbl.Name);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static string GetImageAttrName(Table _tbl)
+        {
+            try
+            {
+                return GlobalVariables.g_colTableHaveImage[_tbl.Name];
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }

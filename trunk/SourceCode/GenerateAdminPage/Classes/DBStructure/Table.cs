@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.DBStructure
 {
     public class Table
     {

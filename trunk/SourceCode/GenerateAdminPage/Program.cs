@@ -8,6 +8,7 @@ namespace GenerateAdminPage
     #region Using
     using GenerateAdminPage.Classes;
     using System.Reflection;
+    using GenerateAdminPage.Classes.Helpers;
     #endregion
 
     class Program

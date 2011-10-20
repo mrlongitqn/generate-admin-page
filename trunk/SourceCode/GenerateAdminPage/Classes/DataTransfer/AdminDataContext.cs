@@ -8,6 +8,7 @@ namespace GenerateAdminPage.Classes
     #region Using 
     using System.Data;
     using System.Data.SqlClient;
+    using GenerateAdminPage.Classes.DBStructure;
     #endregion
 
     public class ForeignKey
@@ -56,7 +57,7 @@ namespace GenerateAdminPage.Classes
                 lstItem = ConvertDataTable2List(ds.Tables["ListTable"]);
                 return lstItem;
             }
-            catch (Exception ex)
+            catch
             {
                 return lstItem;
             } 

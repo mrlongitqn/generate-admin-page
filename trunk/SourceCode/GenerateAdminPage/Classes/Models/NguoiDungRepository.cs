@@ -3,34 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.Models
 {
-    public class NguoiDungRepository : Repository
+    #region USING
+    using GenerateAdminPage.Classes.Base;
+    using GenerateAdminPage.Classes.DBStructure;
+    using GenerateAdminPage.Classes.Helpers;
+    #endregion
+
+    public class NguoiDungRepository : AbstractRepository
     {
-        public Table _BaseInfo { get; set; }
-        public Table _table { get; set; }
-
-        public override string GenerateClasses(DataBase _database, Table _tbl)
-        {
-            _db = _database;
-            _table = _tbl;
-
-            if (_tbl != null)
-            {
-                GlobalVariables.g_ModelName = _tbl.Name;
-            }
-            else
-            {
-                GlobalVariables.g_ModelName = GlobalVariables.g_sTableNguoiDung;
-            }
-
-            string Result = "";
-
-            Result += GenerateNameSpace("Models.Repositories");
-
-            return Result;
-        }
-
         public override string GenerateUsingRegion()
         {
             string Result = "";
@@ -49,13 +31,13 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class " + GlobalVariables.g_ModelName + "Repository" + END;
+            Result += TAB + "public class " + GlobalVariables.g_sTableNguoiDung + "Repository" + END;
             Result += TAB + "{" + END;
             Result += TAB2 + "public int TotalItem { get; set; }" + END;
             Result += GenerateSelectAll() + END;
             Result += GenerateSelectPaging() + END;
             Result += GenerateSelectByUserName() + END;
-            if (_table != null)
+            if (Tbl != null)
             {
                 Result += GenerateSelectByID() + END;
                 Result += GenerateRetrieveByID() + END;
@@ -74,9 +56,9 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "Info> SelectAll(string role)" + END;
+            Result += TAB2 + "public List<" + GlobalVariables.g_sTableNguoiDung + "Info> SelectAll(string role)" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "List<" + GlobalVariables.g_ModelName + "Info> lstItem = new List<" + GlobalVariables.g_ModelName + "Info>();" + END;
+            Result += TAB3 + "List<" + GlobalVariables.g_sTableNguoiDung + "Info> lstItem = new List<" + GlobalVariables.g_sTableNguoiDung + "Info>();" + END;
             Result += TAB3 + "MembershipUserCollection userCollection = Membership.GetAllUsers();" + END;
             Result += TAB3 + "foreach (MembershipUser user in userCollection)" + END;
             Result += TAB3 + "{" + END;
@@ -87,12 +69,12 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
             
-            Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB6 + GlobalVariables.g_sTableNguoiDung + "Info userInfo = new " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB6 + "{" + END;
 
-            if (_table == null)
+            if (Tbl == null)
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
                 Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
@@ -102,14 +84,14 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
-                Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
+                Result += TAB8 + "ID = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
                 Result += TAB8 + "Email = user.Email," + END;
                 Result += TAB8 + "Role = Roles.GetRolesForUser(user.UserName)[0]" + END;
                 Result += TAB7 + "}," + END;
-                Result += TAB7 + "ExtraInfo = SelectByID((Guid)user.ProviderUserKey)" + END;
+                Result += TAB7 + "ExtraInfo = SelectByID((" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey)" + END;
             }
             
             Result += TAB6 + "};" + END;
@@ -123,12 +105,12 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser.ToUpper() != \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
-            Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB6 + GlobalVariables.g_sTableNguoiDung + "Info userInfo = new " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB6 + "{" + END;
 
-            if (_table == null)
+            if (Tbl == null)
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
                 Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
@@ -138,14 +120,14 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
-                Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
+                Result += TAB8 + "ID = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
                 Result += TAB8 + "Email = user.Email," + END;
                 Result += TAB8 + "Role = Roles.GetRolesForUser(user.UserName)[0]" + END;
                 Result += TAB7 + "}," + END;
-                Result += TAB7 + "ExtraInfo = SelectByID((Guid)user.ProviderUserKey)" + END;
+                Result += TAB7 + "ExtraInfo = SelectByID((" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey)" + END;
             }
 
             Result += TAB6 + "};" + END;
@@ -166,9 +148,9 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "Info> SelectPaging(int page, int pageSize, string role)" + END;
+            Result += TAB2 + "public List<" + GlobalVariables.g_sTableNguoiDung + "Info> SelectPaging(int page, int pageSize, string role)" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "List<" + GlobalVariables.g_ModelName + "Info> lstItem = new List<" + GlobalVariables.g_ModelName + "Info>();" + END;
+            Result += TAB3 + "List<" + GlobalVariables.g_sTableNguoiDung + "Info> lstItem = new List<" + GlobalVariables.g_sTableNguoiDung + "Info>();" + END;
             Result += TAB3 + "MembershipUserCollection userCollection = Membership.GetAllUsers();" + END;
             Result += TAB3 + "foreach (MembershipUser user in userCollection)" + END;
             Result += TAB3 + "{" + END;
@@ -179,11 +161,11 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
-            Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB6 + GlobalVariables.g_sTableNguoiDung + "Info userInfo = new " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB6 + "{" + END;
-            if (_table == null)
+            if (Tbl == null)
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
                 Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
@@ -193,14 +175,14 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
-                Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
+                Result += TAB8 + "ID = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
                 Result += TAB8 + "Email = user.Email," + END;
                 Result += TAB8 + "Role = Roles.GetRolesForUser(user.UserName)[0]" + END;
                 Result += TAB7 + "}," + END;
-                Result += TAB7 + "ExtraInfo = SelectByID((Guid)user.ProviderUserKey)" + END;
+                Result += TAB7 + "ExtraInfo = SelectByID((" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey)" + END;
             }
             Result += TAB6 + "};" + END;
 
@@ -213,11 +195,11 @@ namespace GenerateAdminPage.Classes
             Result += TAB5 + "if (roleForUser.ToUpper() != \"" + GlobalVariables.g_sSuperAdmin + "\" && roleForUser.ToUpper() != \"" + GlobalVariables.g_sAdmin + "\")" + END;
             Result += TAB5 + "{" + END;
 
-            Result += TAB6 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB6 + GlobalVariables.g_sTableNguoiDung + "Info userInfo = new " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB6 + "{" + END;
-            if (_table == null)
+            if (Tbl == null)
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
                 Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
@@ -227,14 +209,14 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB7 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB7 + "{" + END;
-                Result += TAB8 + "ID = (Guid)user.ProviderUserKey," + END;
+                Result += TAB8 + "ID = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey," + END;
                 Result += TAB8 + "UserName = user.UserName," + END;
                 Result += TAB8 + "Email = user.Email," + END;
                 Result += TAB8 + "Role = Roles.GetRolesForUser(user.UserName)[0]" + END;
                 Result += TAB7 + "}," + END;
-                Result += TAB7 + "ExtraInfo = SelectByID((Guid)user.ProviderUserKey)" + END;
+                Result += TAB7 + "ExtraInfo = SelectByID((" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey)" + END;
             }
             Result += TAB6 + "};" + END;
 
@@ -255,14 +237,14 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public " + GlobalVariables.g_ModelName + "Info SelectByUserName(string username)" + END;
+            Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + "Info SelectByUserName(string username)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "var user = Membership.GetUser(username);" + END;
-            Result += TAB3 + GlobalVariables.g_ModelName + "Info userInfo = new " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB3 + GlobalVariables.g_sTableNguoiDung + "Info userInfo = new " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB3 + "{" + END;
-            if (_table == null)
+            if (Tbl == null)
             {
-                Result += TAB4 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB4 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB4 + "{" + END;
                 Result += TAB5 + "ID = (Guid)user.ProviderUserKey," + END;
                 Result += TAB5 + "UserName = user.UserName," + END;
@@ -272,14 +254,14 @@ namespace GenerateAdminPage.Classes
             }
             else
             {
-                Result += TAB4 + "BaseInfo = new " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+                Result += TAB4 + "BaseInfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
                 Result += TAB4 + "{" + END;
-                Result += TAB5 + "ID = (Guid)user.ProviderUserKey," + END;
+                Result += TAB5 + "ID = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey," + END;
                 Result += TAB5 + "UserName = user.UserName," + END;
                 Result += TAB5 + "Email = user.Email," + END;
                 Result += TAB5 + "Role = Roles.GetRolesForUser(user.UserName)[0]" + END;
                 Result += TAB4 + "}," + END;
-                Result += TAB4 + "ExtraInfo = SelectByID((Guid)user.ProviderUserKey)" + END;
+                Result += TAB4 + "ExtraInfo = SelectByID((" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")user.ProviderUserKey)" + END;
             }
             Result += TAB3 + "};" + END;
             Result += TAB3 + "TotalItem = 1;" + END;
@@ -293,12 +275,12 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public " + GlobalVariables.g_ModelName + " SelectByID(Guid id)" + END;
+            Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + " SelectByID(" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + " id)" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "var item = DataContext.Instance." + GlobalVariables.g_ModelName + "s.SingleOrDefault(dmw => dmw." + Utils.GetPKWith1Attr(_table) + " == id);" + END;
+            Result += TAB3 + "var item = DataContext.Instance." + GlobalVariables.g_sTableNguoiDung + ".SingleOrDefault(dmw => dmw." + Utils.GetPKWith1Attr(Tbl) + " == id);" + END;
             Result += TAB3 + "if (item != null)" + END;
             Result += TAB4 + "return item;" + END;
-            Result += TAB3 + "return new " + GlobalVariables.g_ModelName + "();" + END;
+            Result += TAB3 + "return new " + GlobalVariables.g_sTableNguoiDung + "();" + END;
             Result += TAB2 + "}" + END;
 
             return Result;
@@ -308,12 +290,12 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "Info> RetrieveByID(Guid id)" + END;
+            Result += TAB2 + "public List<" + GlobalVariables.g_sTableNguoiDung + "Info> RetrieveByID(" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + " id)" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "var lst = new List<" + GlobalVariables.g_ModelName + "Info>();" + END;
-            Result += TAB3 + "var item = DataContext.Instance." + GlobalVariables.g_ModelName + "s.SingleOrDefault(dmw => dmw." + Utils.GetPKWith1Attr(_table) + " == id);" + END;
+            Result += TAB3 + "var lst = new List<" + GlobalVariables.g_sTableNguoiDung + "Info>();" + END;
+            Result += TAB3 + "var item = DataContext.Instance." + GlobalVariables.g_sTableNguoiDung + ".SingleOrDefault(dmw => dmw." + Utils.GetPKWith1Attr(Tbl) + " == id);" + END;
 
-            Result += TAB3 + "var baseinfo = new NguoiDungBaseInfo" + END;
+            Result += TAB3 + "var baseinfo = new " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
             Result += TAB3 + "{" + END;
             Result += TAB4 + "ID = item.ID," + END;
             Result += TAB4 + "UserName = item.aspnet_Users.UserName," + END;
@@ -322,7 +304,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB3 + "};" + END;
 
             Result += TAB3 + "if (item != null)" + END;
-            Result += TAB4 + "lst.Add(new " + GlobalVariables.g_ModelName + "Info { BaseInfo = baseinfo, ExtraInfo = item });" + END;
+            Result += TAB4 + "lst.Add(new " + GlobalVariables.g_sTableNguoiDung + "Info { BaseInfo = baseinfo, ExtraInfo = item });" + END;
             Result += TAB3 + "return lst;" + END;
             Result += TAB2 + "}" + END;
 
@@ -333,20 +315,20 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            if (_table != null)
+            if (Tbl != null)
             {
                 Result += TAB6 + "var extraInfo = new " + GlobalVariables.g_sTableNguoiDung + END;
                 Result += TAB6 + "{" + END;
-                for (int i = 0; i < _table.Attributes.Count; i++)
+                for (int i = 0; i < Tbl.Attributes.Count; i++)
                 {
-                    if (_table.Attributes[i].Name == Utils.GetPKWith1Attr(_table))
+                    if (Tbl.Attributes[i].Name == Utils.GetPKWith1Attr(Tbl))
                     {
-                        Result += TAB7 + _table.Attributes[i].Name + " = (Guid)newUser.ProviderUserKey " + END;
+                        Result += TAB7 + Tbl.Attributes[i].Name + " = (" + Utils.GetDataType(Utils.GetPK(Tbl).Type) + ")newUser.ProviderUserKey " + END;
                         break;
                     }
                 }
                 Result += TAB6 + "};" + END;
-                Result += TAB6 + "DataContext.Instance." + GlobalVariables.g_ModelName + "s.AddObject(extraInfo);" + END;
+                Result += TAB6 + "DataContext.Instance." + GlobalVariables.g_sTableNguoiDung + ".AddObject(extraInfo);" + END;
                 Result += TAB6 + "DataContext.Instance.SaveChanges();" + END;
             }
 
@@ -357,7 +339,7 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public bool Insert(Add" + GlobalVariables.g_ModelName + "ViewModel obj, ref string errorText)" + END;
+            Result += TAB2 + "public bool Insert(Add" + GlobalVariables.g_sTableNguoiDung + "ViewModel obj, ref string errorText)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "errorText = \"\";" + END;
             Result += TAB3 + "try" + END;
@@ -414,15 +396,22 @@ namespace GenerateAdminPage.Classes
         public override string GenerateDelete()
         {
             string Result = "";
-
-            Result += TAB2 + "public bool Delete(Guid id)" + END;
+            if (Tbl != null)
+            {
+                var lst = Utils.PKHaveMoreThan1Attribute(Tbl);
+                Result += TAB2 + "public bool Delete(" + Utils.BuildPKParams(lst) + ")" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public bool Delete(Guid id)" + END;
+            }
             Result += TAB2 + "{" + END;
             Result += TAB3 + "try" + END;
             Result += TAB3 + "{" + END;
-            if (_table != null)
+            if (Tbl != null)
             {
-                Result += TAB4 + "var item = DataContext.Instance." + GlobalVariables.g_ModelName + "s.FirstOrDefault(p => p." + Utils.GetPKWith1Attr(_table) + " == id);" + END;
-                Result += TAB4 + "DataContext.Instance." + GlobalVariables.g_ModelName + "s.DeleteObject(item);" + END;
+                Result += TAB4 + "var item = DataContext.Instance." + GlobalVariables.g_sTableNguoiDung + ".FirstOrDefault(p => p." + Utils.GetPKWith1Attr(Tbl) + " == id);" + END;
+                Result += TAB4 + "DataContext.Instance." + GlobalVariables.g_sTableNguoiDung + ".DeleteObject(item);" + END;
                 Result += TAB4 + "DataContext.Instance.SaveChanges();" + END;
                 Result += TAB4 + "Membership.DeleteUser(Membership.GetUser(id).UserName, true);" + END;
             }
@@ -441,7 +430,7 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
-        public override string GenerateGetTotalItem()
+        public string GenerateGetTotalItem()
         {
             string Result = "";
 
@@ -485,7 +474,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB2 + "public int GetTotalPage(string role)" + END;
             Result += TAB2 + "{" + END;
             Result += TAB3 + "int RecordCount = GetTotalItem(role);" + END;
-            Result += TAB3 + "int PageSize = WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage;" + END;
+            Result += TAB3 + "int PageSize = WebConfiguration.Num" + GlobalVariables.g_sTableNguoiDung + "PerPage;" + END;
             Result += TAB3 + "return (RecordCount / PageSize) + ((RecordCount % PageSize == 0) ? 0 : 1);" + END;
             Result += TAB2 + "}" + END;
 

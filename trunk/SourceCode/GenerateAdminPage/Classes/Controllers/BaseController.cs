@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.Controllers
 {
-    public class BaseController : AdminController
+    #region USING
+    using GenerateAdminPage.Classes.Base;
+    using GenerateAdminPage.Classes.DBStructure;
+    using GenerateAdminPage.Classes.Helpers;
+    #endregion
+
+    public class BaseController : AbstractBase
     {
         public override string GenerateUsingRegion()
         {
@@ -21,6 +27,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "using " + GlobalVariables.g_sNameSpace + ".Helpers;" + END;
             Result += TAB + "using " + GlobalVariables.g_sNameSpace + ".Models;" + END;
             Result += TAB + "using System.IO;" + END;
+            Result += TAB + "using System.Web;" + END;
             Result += TAB + "#endregion" + END;
 
             return Result;
@@ -52,20 +59,20 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            for (int i = 0; i < _db.Tables.Count; i++)
+            for (int i = 0; i < DB.Tables.Count; i++)
             {
-                if (_db.Tables[i].Name == GlobalVariables.g_sTableNguoiDung ||
-                    Utils.TableUsingFCK(_db.Tables[i]) || Utils.TableHaveImageAttribute(_db.Tables[i]))
+                if (DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung ||
+                    Utils.TableUsingFCK(DB.Tables[i]) || Utils.TableHaveImageAttribute(DB.Tables[i]))
                 {
-                    Result += TAB2 + "public " + _db.Tables[i].Name + "ViewModel RetrieveDetailOf" + _db.Tables[i].Name + "ViewModel(DataTransferViewModel dataTransfer)" + END;
+                    Result += TAB2 + "public " + DB.Tables[i].Name + "ViewModel RetrieveDetailOf" + DB.Tables[i].Name + "ViewModel(DataTransferViewModel dataTransfer)" + END;
                     Result += TAB2 + "{" + END;
-                    Result += TAB3 + "return new " + _db.Tables[i].Name + "ViewModel" + END;
+                    Result += TAB3 + "return new " + DB.Tables[i].Name + "ViewModel" + END;
                     Result += TAB3 + "{" + END;
-                    Result += TAB4 + "GetModel = new Get" + _db.Tables[i].Name + "ViewModel" + END;
+                    Result += TAB4 + "GetModel = new Get" + DB.Tables[i].Name + "ViewModel" + END;
                     Result += TAB4 + "{" + END;
 
                     var id = "";
-                    var PK = Utils.GetPK(_db.Tables[i]);
+                    var PK = Utils.GetPK(DB.Tables[i]);
 
                     if (PK.Type == DataType.STRING)
                     {
@@ -80,10 +87,10 @@ namespace GenerateAdminPage.Classes
                         id = "IntID";
                     }
 
-                    Result += TAB5 + "LstObjModel = _rep" + _db.Tables[i].Name + ".RetrieveByID(dataTransfer." + id + ")" + END;
+                    Result += TAB5 + "LstObjModel = _rep" + DB.Tables[i].Name + ".RetrieveByID(dataTransfer." + id + ")" + END;
 
                     Result += TAB4 + "}," + END;
-                    Result += TAB4 + "EditModel = new Edit" + _db.Tables[i].Name + "ViewModel" + END;
+                    Result += TAB4 + "EditModel = new Edit" + DB.Tables[i].Name + "ViewModel" + END;
                     Result += TAB4 + "{" + END;
                     Result += TAB5 + "ID = dataTransfer." + id + "," + END;
                     Result += TAB4 + "}," + END;
@@ -99,11 +106,13 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            for (int i = 0; i < _db.Tables.Count; i++)
+            for (int i = 0; i < DB.Tables.Count; i++)
             {
-                if (_db.Tables[i].Name != GlobalVariables.g_sTableNguoiDung && _db.Tables[i].Name != "aspnet_Users")
+                if (DB.Tables[i].Name != GlobalVariables.g_sTableNguoiDung && 
+                    !DB.Tables[i].Name.StartsWith("SLM_") && !DB.Tables[i].Name.StartsWith("aspnet_") &&
+                    DB.Tables[i].Name != "dtproperties" && DB.Tables[i].Name != "sysdiagrams")
                 {
-                    Result += TAB2 + "protected " + _db.Tables[i].Name + "Repository _rep" + _db.Tables[i].Name + " = new " + _db.Tables[i].Name + "Repository();" + END;
+                    Result += TAB2 + "protected " + DB.Tables[i].Name + "Repository _rep" + DB.Tables[i].Name + " = new " + DB.Tables[i].Name + "Repository();" + END;
                 }
             }
             Result += TAB2 + "protected " + GlobalVariables.g_sTableNguoiDung + "Repository _rep" + GlobalVariables.g_sTableNguoiDung + " = new " + GlobalVariables.g_sTableNguoiDung + "Repository();" + END;
@@ -254,17 +263,19 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            for (int i = 0; i < _db.Tables.Count; i++)
+            for (int i = 0; i < DB.Tables.Count; i++)
             {
-                if (_db.Tables[i].Name != GlobalVariables.g_sTableNguoiDung && _db.Tables[i].Name != "aspnet_Users")
+                if (DB.Tables[i].Name != GlobalVariables.g_sTableNguoiDung &&
+                     !DB.Tables[i].Name.StartsWith("SLM_") && !DB.Tables[i].Name.StartsWith("aspnet_") &&
+                     DB.Tables[i].Name != "dtproperties" && DB.Tables[i].Name != "sysdiagrams")
                 {
-                    if (!Utils.TableHaveForeignKey(_db.Tables[i]))
+                    if (!Utils.TableHaveForeignKey(DB.Tables[i]))
                     {
-                        Result += GenerateRetrieveViewModel(_db.Tables[i]) + END;
+                        Result += GenerateRetrieveViewModel(DB.Tables[i]) + END;
                     }
                     else
                     {
-                        Result += GenerateRetrieveViewModelByFK(_db.Tables[i]) + END;
+                        Result += GenerateRetrieveViewModelByFK(DB.Tables[i]) + END;
                     }
                 }
             }
@@ -479,22 +490,36 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB2 + "public " + GlobalVariables.g_ModelName + "ViewModel Retrieve" + GlobalVariables.g_ModelName + "ViewModel(DataTransferViewModel dataTransfer)" + END;
+            Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + "ViewModel Retrieve" + GlobalVariables.g_sTableNguoiDung + "ViewModel(DataTransferViewModel dataTransfer)" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "return new " + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB3 + "return new " + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB3 + "{" + END;
-            Result += TAB4 + "GetModel = new Get" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB4 + "GetModel = new Get" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "LstObjModel = _rep" + GlobalVariables.g_ModelName + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_ModelName + "PerPage, dataTransfer.Role)," + END;
-            Result += TAB5 + "TotalItem = _rep" + GlobalVariables.g_ModelName + ".GetTotalItem(dataTransfer.Role)," + END;
+            Result += TAB5 + "LstObjModel = _rep" + GlobalVariables.g_sTableNguoiDung + ".SelectPaging(dataTransfer.CurrentPage, WebConfiguration.Num" + GlobalVariables.g_sTableNguoiDung + "PerPage, dataTransfer.Role)," + END;
+            Result += TAB5 + "TotalItem = _rep" + GlobalVariables.g_sTableNguoiDung + ".GetTotalItem(dataTransfer.Role)," + END;
             Result += TAB5 + "CurrentPage = dataTransfer.CurrentPage" + END;
             Result += TAB4 + "}," + END;
-            Result += TAB4 + "AddModel = new Add" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB4 + "AddModel = new Add" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB4 + "{" + END;
             Result += TAB4 + "}," + END;
-            Result += TAB4 + "EditModel = new Edit" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB4 + "EditModel = new Edit" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB4 + "{" + END;
-            Result += TAB5 + "ID = dataTransfer.GuidID," + END;
+            if (Utils.GetTableByName(DB, GlobalVariables.g_sTableNguoiDung) != null)
+            {
+                if (Utils.GetPK(Utils.GetTableByName(DB, GlobalVariables.g_sTableNguoiDung)).Type == DataType.INT)
+                {
+                    Result += TAB5 + "ID = dataTransfer.IntID," + END;
+                }
+                else if (Utils.GetPK(Utils.GetTableByName(DB, GlobalVariables.g_sTableNguoiDung)).Type == DataType.GUILD)
+                {
+                    Result += TAB5 + "ID = dataTransfer.GuidID," + END;
+                }
+            }
+            else
+            {
+                Result += TAB5 + "ID = dataTransfer.GuidID," + END;
+            }
             Result += TAB4 + "}" + END;
             Result += TAB3 + "};" + END;
             Result += TAB2 + "}" + END;

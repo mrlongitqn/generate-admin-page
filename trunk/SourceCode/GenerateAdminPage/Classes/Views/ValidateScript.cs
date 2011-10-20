@@ -5,41 +5,48 @@ using System.Text;
 
 namespace GenerateAdminPage.Classes
 {
-    public class ValidateScript: Views
+    #region USING
+    using GenerateAdminPage.Classes.Base;
+    using GenerateAdminPage.Classes.DBStructure;
+    using GenerateAdminPage.Classes.Helpers;
+    #endregion
+
+    public class ValidateScript: AbstractBase
     {
-        public override void InitView(DataBase _database, Table _tbl)
+        public override string GenerateUsingRegion()
         {
-            _db = _database;
-            _table = _tbl;
-            GlobalVariables.g_ModelName = _tbl.Name;
-            TblUsingFck = Utils.TableUsingFCK(_table);
-            TblHaveImgAttr = Utils.TableHaveImageAttribute(_table);
+            return string.Empty;
+        }
+
+        public override string GenerateClass()
+        {
+            return string.Empty;
         }
 
         public override string GenerateView(EnumView _type)
         {
             string Result = "";
             
-            Result += "function Validate" + _table.Name + "() {" + END;
+            Result += "function Validate" + Tbl.Name + "() {" + END;
 
-            for (int i = 0; i < _table.Attributes.Count; i++)
+            for (int i = 0; i < Tbl.Attributes.Count; i++)
             {
-                if (!_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsForeignKey ||
-                    (_table.Attributes[i].IsPrimaryKey && !_table.Attributes[i].IsIdentify))
+                if (!Tbl.Attributes[i].IsPrimaryKey && !Tbl.Attributes[i].IsForeignKey ||
+                    (Tbl.Attributes[i].IsPrimaryKey && !Tbl.Attributes[i].IsIdentify))
                 {
-                    if (_table.Attributes[i].Name != Utils.GetImageAttrName(_table))
+                    if (Tbl.Attributes[i].Name != Utils.GetImageAttrName(Tbl))
                     {
-                        Result += TAB + "var " + _table.Attributes[i].Name.ToLower() + " = document.getElementsByName(\"" + _table.Name + "_" + _table.Attributes[i].Name + "\").item(0);" + END;
-                        Result += TAB + "if (" + _table.Attributes[i].Name.ToLower() + ".value == \"\") {" + END;
-                        Result += TAB2 + "alert(\"Please input " + _table.Attributes[i].Name + "\");" + END;
+                        Result += TAB + "var " + Tbl.Attributes[i].Name.ToLower() + " = document.getElementsByName(\"" + Tbl.Name + "_" + Tbl.Attributes[i].Name + "\").item(0);" + END;
+                        Result += TAB + "if (" + Tbl.Attributes[i].Name.ToLower() + ".value == \"\") {" + END;
+                        Result += TAB2 + "alert(\"Please input " + Tbl.Attributes[i].Name + "\");" + END;
                         Result += TAB2 + "return false;" + END;
                         Result += TAB + "}" + END;
                     }
                     else
                     {
-                        Result += TAB + "var " + _table.Attributes[i].Name.ToLower() + " = document.getElementsByName(\"" + _table.Name + "_" + Utils.GetImageAttrName(_table) + "" + "\").item(0);" + END;
-                        Result += TAB + "if (" + _table.Attributes[i].Name.ToLower() + ".value == \"\") {" + END;
-                        Result += TAB2 + "alert(\"Please choose " + _table.Attributes[i].Name + "\");" + END;
+                        Result += TAB + "var " + Tbl.Attributes[i].Name.ToLower() + " = document.getElementsByName(\"" + Tbl.Name + "_" + Utils.GetImageAttrName(Tbl) + "" + "\").item(0);" + END;
+                        Result += TAB + "if (" + Tbl.Attributes[i].Name.ToLower() + ".value == \"\") {" + END;
+                        Result += TAB2 + "alert(\"Please choose " + Tbl.Attributes[i].Name + "\");" + END;
                         Result += TAB2 + "return false;" + END;
                         Result += TAB + "}" + END;
                     }
@@ -47,7 +54,9 @@ namespace GenerateAdminPage.Classes
             }
 
             Result += TAB + "return true;" + END;
-            Result += "}" + END;
+            Result += "}" + END + END;
+
+            Result += GenerateValidateNguoiDung() + END;
 
             return Result;
         }

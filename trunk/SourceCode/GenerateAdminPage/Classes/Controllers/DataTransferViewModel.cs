@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.Controllers
 {
-    public class DataTransferViewModel: ClassGenerate
+    #region USING
+    using GenerateAdminPage.Classes.Base;
+    using GenerateAdminPage.Classes.DBStructure;
+    using GenerateAdminPage.Classes.Helpers;
+    #endregion
+
+    public class DataTransferViewModel: AbstractBase
     {
         public override string GenerateUsingRegion()
         {
@@ -16,38 +22,6 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "#endregion" + END;
 
             return Result;
-        }
-
-        public List<Attribute> GetListOfForeignKey()
-        {
-            var lst = new List<Attribute>();
-            for (int i = 0; i < _db.Tables.Count; i++)
-            {
-                if (_db.Tables[i].Name != "aspnet_Users")
-                {
-                    for (int j = 0; j < _db.Tables[i].Attributes.Count; j++)
-                    {
-                        if (_db.Tables[i].Attributes[j].IsForeignKey)
-                        {
-                            if (!IsExist(lst, _db.Tables[i].Attributes[j].Name))
-                            {
-                                lst.Add(_db.Tables[i].Attributes[j]);
-                            }
-                        }
-                    }
-                }
-            }
-            return lst;
-        }
-
-        public bool IsExist(List<Attribute> lst, string key)
-        {
-            foreach (Attribute attr in lst)
-            {
-                if (attr.Name == key)
-                    return true;
-            }
-            return false;
         }
 
         public override string GenerateClass()
@@ -84,7 +58,7 @@ namespace GenerateAdminPage.Classes
                     {
                         Result += TAB3 + lst[i].Name + " = \"\";" + END;
                     }
-                    else if(lst[i].Type == DataType.BOOL)
+                    else if (lst[i].Type == DataType.BOOL)
                     {
                         Result += TAB3 + lst[i].Name + " = false;" + END;
                     }
@@ -107,6 +81,39 @@ namespace GenerateAdminPage.Classes
             return Result;
         }
 
+        public List<Attribute> GetListOfForeignKey()
+        {
+            var lst = new List<Attribute>();
+            for (int i = 0; i < DB.Tables.Count; i++)
+            {
+                if (!DB.Tables[i].Name.StartsWith("SLM_") && !DB.Tables[i].Name.StartsWith("aspnet_") &&
+                    DB.Tables[i].Name != "dtproperties" && DB.Tables[i].Name != "sysdiagrams")
+                {
+                    for (int j = 0; j < DB.Tables[i].Attributes.Count; j++)
+                    {
+                        if (DB.Tables[i].Attributes[j].IsForeignKey)
+                        {
+                            if (!IsExist(lst, DB.Tables[i].Attributes[j].Name))
+                            {
+                                lst.Add(DB.Tables[i].Attributes[j]);
+                            }
+                        }
+                    }
+                }
+            }
+            return lst;
+        }
+
+        public bool IsExist(List<Attribute> lst, string key)
+        {
+            foreach (Attribute attr in lst)
+            {
+                if (attr.Name == key)
+                    return true;
+            }
+            return false;
+        }
+
         public string GenerateEnumViewModel()
         {
             string Result = "";
@@ -115,46 +122,50 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "public enum EnumViewModel" + END;
             Result += TAB + "{" + END;
 
-            for (int i = 0; i < _db.Tables.Count; i++)
+            for (int i = 0; i < DB.Tables.Count; i++)
             {
-                if (_db.Tables[i].Name != "aspnet_Users")
+                if ((DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung || !DB.Tables[i].Name.StartsWith("SLM_")) &&
+                    !DB.Tables[i].Name.StartsWith("aspnet_") &&
+                    DB.Tables[i].Name != "dtproperties" && DB.Tables[i].Name != "sysdiagrams")
                 {
-                    if (Utils.TableUsingFCK(_db.Tables[i]) || Utils.TableHaveImageAttribute(_db.Tables[i]))
+                    if (Utils.TableUsingFCK(DB.Tables[i]) || Utils.TableHaveImageAttribute(DB.Tables[i]) || GlobalVariables.g_colViewDetail.Contains(DB.Tables[i].Name))
                     {
-                        Result += TAB2 + "ADMIN_DETAILOF_" + _db.Tables[i].Name.ToUpper() + "," + END;
-                        GlobalVariables.g_colEnumViewModel.Add("ADMIN_DETAILOF_" + _db.Tables[i].Name.ToUpper());
+                        Result += TAB2 + "ADMIN_DETAILOF_" + DB.Tables[i].Name.ToUpper() + "," + END;
+                        GlobalVariables.g_colEnumViewModel.Add("ADMIN_DETAILOF_" + DB.Tables[i].Name.ToUpper());
                     }
-                    else if(_db.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
+                    else if(DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
                     {
-                        Result += TAB2 + "ADMIN_DETAILOF_" + _db.Tables[i].Name.ToUpper() + "," + END;
-                        GlobalVariables.g_colEnumViewModel.Add("ADMIN_DETAILOF_" + _db.Tables[i].Name.ToUpper());
+                        Result += TAB2 + "ADMIN_DETAILOF_" + DB.Tables[i].Name.ToUpper() + "," + END;
+                        GlobalVariables.g_colEnumViewModel.Add("ADMIN_DETAILOF_" + DB.Tables[i].Name.ToUpper());
                     }
                 }
             }
 
-            for (int i = 0; i < _db.Tables.Count; i++)
+            for (int i = 0; i < DB.Tables.Count; i++)
             {
-                if (_db.Tables[i].Name != "aspnet_Users")
+                if ((DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung || !DB.Tables[i].Name.StartsWith("SLM_")) &&
+                    !DB.Tables[i].Name.StartsWith("aspnet_") &&
+                    DB.Tables[i].Name != "dtproperties" && DB.Tables[i].Name != "sysdiagrams")
                 {
-                    Result += TAB2 + "ADMIN_" + _db.Tables[i].Name.ToUpper() + "," + END;
-                    GlobalVariables.g_colEnumViewModel.Add("ADMIN_" + _db.Tables[i].Name.ToUpper());
+                    Result += TAB2 + "ADMIN_" + DB.Tables[i].Name.ToUpper() + "," + END;
+                    GlobalVariables.g_colEnumViewModel.Add("ADMIN_" + DB.Tables[i].Name.ToUpper());
                 }
 
-                if (_db.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
+                if (DB.Tables[i].Name == GlobalVariables.g_sTableNguoiDung)
                     isExistNguoiDung = true;
             }
 
             if (!isExistNguoiDung)
             {
-                Result += TAB2 + "ADMIN_NGUOIDUNG," + END;
-                GlobalVariables.g_colEnumViewModel.Add("ADMIN_NGUOIDUNG");
+                Result += TAB2 + "ADMIN_" + GlobalVariables.g_sTableNguoiDung + "," + END;
+                GlobalVariables.g_colEnumViewModel.Add("ADMIN_" + GlobalVariables.g_sTableNguoiDung);
             }
 
 
             Result += TAB2 + "HOME_REGISTER," + END;
-            Result += TAB2 + "HOME_DETAILOF_NGUOIDUNG" + END;
+            Result += TAB2 + "HOME_DETAILOF_" + GlobalVariables.g_sTableNguoiDung + END;
             GlobalVariables.g_colEnumViewModel.Add("HOME_REGISTER");
-            GlobalVariables.g_colEnumViewModel.Add("HOME_DETAILOF_NGUOIDUNG");
+            GlobalVariables.g_colEnumViewModel.Add("HOME_DETAILOF_" + GlobalVariables.g_sTableNguoiDung);
             Result += TAB + "}" + END;
 
             return Result;
