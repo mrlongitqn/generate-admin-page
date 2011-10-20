@@ -3,33 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GenerateAdminPage.Classes
+namespace GenerateAdminPage.Classes.Models
 {
-    public class NguoiDungViewModel : ViewModel
+    #region USING
+    using GenerateAdminPage.Classes.Base;
+    using GenerateAdminPage.Classes.DBStructure;
+    using GenerateAdminPage.Classes.Helpers;
+    #endregion
+
+    public class NguoiDungViewModel : AbstractViewModel
     {
-        public Table _BaseInfo { get; set; }
-
-        public override string GenerateClasses(DataBase _database, Table _tbl)
-        {
-            _table = _tbl;
-            _db = _database;
-
-            if (_tbl != null)
-            {
-                GlobalVariables.g_ModelName = _tbl.Name;
-            }
-            else
-            {
-                GlobalVariables.g_ModelName = GlobalVariables.g_sTableNguoiDung;
-            }
-
-            string Result = "";
-
-            Result += GenerateNameSpace("Models.ViewModels");
-
-            return Result;
-        }
-
         public override string GenerateUsingRegion()
         {
             string Result = "";
@@ -49,11 +32,11 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class " + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB + "public class " + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public Get" + GlobalVariables.g_ModelName + "ViewModel GetModel { get; set; }" + END;
-            Result += TAB2 + "public Edit" + GlobalVariables.g_ModelName + "ViewModel EditModel { get; set; }" + END;
-            Result += TAB2 + "public Add" + GlobalVariables.g_ModelName + "ViewModel AddModel { get; set; }" + END;
+            Result += TAB2 + "public Get" + GlobalVariables.g_sTableNguoiDung + "ViewModel GetModel { get; set; }" + END;
+            Result += TAB2 + "public Edit" + GlobalVariables.g_sTableNguoiDung + "ViewModel EditModel { get; set; }" + END;
+            Result += TAB2 + "public Add" + GlobalVariables.g_sTableNguoiDung + "ViewModel AddModel { get; set; }" + END;
             Result += TAB2 + "public string InfoText { get; set; }" + END;
             Result += TAB + "}" + END;
             Result += GenerateGetViewModel() + END;
@@ -68,9 +51,9 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class Get" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB + "public class Get" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public List<" + GlobalVariables.g_ModelName + "Info> LstObjModel { get; set; }" + END;
+            Result += TAB2 + "public List<" + GlobalVariables.g_sTableNguoiDung + "Info> LstObjModel { get; set; }" + END;
             Result += TAB2 + "public int TotalItem { get; set; }" + END;
             Result += TAB2 + "public int CurrentPage { get; set; }" + END;
             Result += TAB + "}" + END;
@@ -82,9 +65,16 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class Edit" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB + "public class Edit" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public Guid ID { get; set; }" + END;
+            if (Tbl != null)
+            {
+                Result += TAB2 + "public " + Utils.GetDataType(Utils.GetPK(Tbl).Type) + " ID { get; set; }" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public Guid ID { get; set; }" + END;
+            }
             Result += TAB + "}" + END;
 
             return Result;
@@ -94,24 +84,25 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class Add" + GlobalVariables.g_ModelName + "ViewModel" + END;
+            Result += TAB + "public class Add" + GlobalVariables.g_sTableNguoiDung + "ViewModel" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public " + GlobalVariables.g_ModelName + "Info Info { get; set; }" + END;
+            Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + "Info Info { get; set; }" + END;
             Result += TAB + "}" + END;
 
             return Result;
         }
 
-        public override string GenerateObjectInfo()
+        public string GenerateObjectInfo()
         {
             string Result = "";
 
-            Result += TAB + "public class " + GlobalVariables.g_ModelName + "Info" + END;
+            Result += TAB + "public class " + GlobalVariables.g_sTableNguoiDung + "Info" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public " + GlobalVariables.g_ModelName + "BaseInfo BaseInfo { get; set; }" + END;
-            if(_table != null)
-                Result += TAB2 + "public " + GlobalVariables.g_ModelName + " ExtraInfo { get; set; }" + END;
-
+            Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + "BaseInfo BaseInfo { get; set; }" + END;
+            if (Tbl != null)
+            {
+                Result += TAB2 + "public " + GlobalVariables.g_sTableNguoiDung + " ExtraInfo { get; set; }" + END;
+            }
             Result += TAB + "}" + END;
 
             return Result;
@@ -121,9 +112,16 @@ namespace GenerateAdminPage.Classes
         {
             string Result = "";
 
-            Result += TAB + "public class " + GlobalVariables.g_ModelName + "BaseInfo" + END;
+            Result += TAB + "public class " + GlobalVariables.g_sTableNguoiDung + "BaseInfo" + END;
             Result += TAB + "{" + END;
-            Result += TAB2 + "public Guid ID { get; set; }" + END;
+            if (Tbl != null)
+            {
+                Result += TAB2 + "public " + Utils.GetDataType(Utils.GetPK(Tbl).Type) + " ID { get; set; }" + END;
+            }
+            else
+            {
+                Result += TAB2 + "public Guid ID { get; set; }" + END;
+            }
             Result += TAB2 + "public string UserName { get; set; }" + END;
             Result += TAB2 + "public string Email { get; set; }" + END;
             Result += TAB2 + "public string Password { get; set; }" + END;

@@ -11,8 +11,38 @@ namespace GenerateAdminPage.Classes.Controllers
     using GenerateAdminPage.Classes.Helpers;
     #endregion
 
-    public class AdminController : AbstractBase
+    public abstract class AbstractController : AbstractBase
     {
+        /// <summary>
+        /// Method is responsible for select generate type such as: view, model or repository
+        /// </summary>
+        /// <returns>Correspding generate class</returns>
+        public static AbstractBase SelectGenerateType(Table tbl)
+        {
+            if (tbl == null)
+            {
+                return new NguoiDungController();
+            }
+            else
+            {
+                if (tbl.Name.ToUpper() == GlobalVariables.g_sTableNguoiDung.ToUpper())
+                {
+                    return new NguoiDungController();
+                }
+                else
+                {
+                    if (Utils.TableHaveImageAttribute(tbl))
+                    {
+                        return new EntityControllerWithImage(); 
+                    }
+                    else
+                    {
+                        return new EntityControllerWithoutImage();
+                    }
+                }
+            }
+        }
+
         public override string GenerateUsingRegion()
         {
             string Result = "";
@@ -39,13 +69,18 @@ namespace GenerateAdminPage.Classes.Controllers
 
             Result += TAB2 + "public ActionResult Index()" + END;
             Result += TAB2 + "{" + END;
-            Result += TAB3 + "return RedirectToAction(\"SelectNguoiDung\");" + END;
+            Result += TAB3 + "return null;" + END;
             Result += TAB2 + "}" + END;
 
             Result += TAB + "}" + END;
 
             return Result;
         }
+
+        public abstract string GenerateSelectActionResult();
+        public abstract string GenerateSelectActionResultPaging();
+        public abstract string GenerateUpdateActionResult();
+        public abstract string GenerateDeleteActionResult();
+        public abstract string GenerateInsertActionResult();
     }
 }
-

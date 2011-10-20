@@ -14,7 +14,6 @@ namespace GenerateAdminPage.Classes
         public static string g_sTableNguoiDung = "NguoiDung";
         public static string g_sSuperAdmin = "SuperAdmin";
         public static string g_sAdmin = "Admin";
-        public static string g_ModelName = "";
         public static List<string> g_colEnumViewModel = new List<string>();
         public static IDictionary<string, string> g_colUsingFCK = new Dictionary<string, string>();
         public static IDictionary<string, string> g_colTableHaveImage = new Dictionary<string, string>();

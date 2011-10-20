@@ -1,0 +1,9 @@
+﻿------ Build started: Project: GenerateAdminPage, Configuration: Release x86 ------
+D:\LamAn\Nhomit87\ProjectInternal\generate-admin-page\SourceCode\GenerateAdminPage\Classes\Models\NguoiDungRepository.cs(11,22): warning CS0108: 'GenerateAdminPage.Classes.NguoiDungRepository._table' hides inherited member 'GenerateAdminPage.Classes.BaseGenerate._table'. Use the new keyword if hiding was intended.
+D:\LamAn\Nhomit87\ProjectInternal\generate-admin-page\SourceCode\GenerateAdminPage\Classes\Base\BaseGenerate.cs(21,22): (Related location)
+D:\LamAn\Nhomit87\ProjectInternal\generate-admin-page\SourceCode\GenerateAdminPage\Classes\DataTransfer\AdminDataContext.cs(59,30): warning CS0168: The variable 'ex' is declared but never used
+D:\LamAn\Nhomit87\ProjectInternal\generate-admin-page\SourceCode\GenerateAdminPage\Classes\Base\Utils.cs(373,17): warning CS0219: The variable 'count' is assigned but its value is never used
+
+Compile complete -- 0 errors, 3 warnings
+  GenerateAdminPage -> D:\LamAn\Nhomit87\ProjectInternal\generate-admin-page\SourceCode\GenerateAdminPage\bin\Release\GenerateAdminPage.exe
+========== Build: 1 succeeded, 0 failed, 0 up-to-date, 0 skipped ==========
