@@ -56,37 +56,7 @@ namespace GenerateAdminPage.Classes
             Result += TAB + "return true;" + END;
             Result += "}" + END + END;
 
-            Result += GenerateValidateNguoiDung() + END;
-
-            return Result;
-        }
-
-        public string GenerateValidateNguoiDung()
-        {
-            string Result = "";
-
-            Result += "function Validate" + GlobalVariables.g_sTableNguoiDung + "() {" + END;
-
-            Result += TAB + "var username = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_UserName" + "\").item(0);" + END;
-            Result += TAB + "if (username.value == \"\") {" + END;
-            Result += TAB2 + "alert(\"Please input UserName\");" + END;
-            Result += TAB2 + "return false;" + END;
-            Result += TAB + "}" + END;
-
-            Result += TAB + "var password = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_Password" + "\").item(0);" + END;
-            Result += TAB + "if (password.value == \"\") {" + END;
-            Result += TAB2 + "alert(\"Please input Password\");" + END;
-            Result += TAB2 + "return false;" + END;
-            Result += TAB + "}" + END;
-
-            Result += TAB + "var email = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_Email" + "\").item(0);" + END;
-            Result += TAB + "if (email.value == \"\") {" + END;
-            Result += TAB2 + "alert(\"Please input Email\");" + END;
-            Result += TAB2 + "return false;" + END;
-            Result += TAB + "}" + END;
-
-            Result += TAB + "return true;" + END;
-            Result += "}" + END;
+            //Result += GenerateValidateNguoiDung() + END;
 
             return Result;
         }

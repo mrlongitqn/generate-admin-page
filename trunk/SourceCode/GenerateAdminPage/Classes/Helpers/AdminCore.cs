@@ -89,13 +89,48 @@ namespace GenerateAdminPage.Classes.Helpers
                         _rep = new ValidateScript();
                         _rep.InitClassGenerate(DB, DB.Tables[i]);
                         result += _rep.GenerateView(EnumView.SELECT) + Environment.NewLine;
-                        path = DataContext.Instance.DataTextProvider.OutputValidateScriptPath + "ValidationInputs.js";
-                        DataContext.Instance.DataTextProvider.WriteData(result, path);
                     }
                 }
             }
+            result += GenerateValidateNguoiDung();
+            path = DataContext.Instance.DataTextProvider.OutputValidateScriptPath + "ValidationInputs.js";
+            DataContext.Instance.DataTextProvider.WriteData(result, path);
             Console.WriteLine("Generated ValidationInputs");
         }
+
+        public string GenerateValidateNguoiDung()
+        {
+            string END = Environment.NewLine;
+            const string TAB = "\t";
+            const string TAB2 = "\t\t";
+            string Result = "";
+
+            Result += "function Validate" + GlobalVariables.g_sTableNguoiDung + "() {" + END;
+
+            Result += TAB + "var username = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_UserName" + "\").item(0);" + END;
+            Result += TAB + "if (username.value == \"\") {" + END;
+            Result += TAB2 + "alert(\"Please input UserName\");" + END;
+            Result += TAB2 + "return false;" + END;
+            Result += TAB + "}" + END;
+
+            Result += TAB + "var password = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_Password" + "\").item(0);" + END;
+            Result += TAB + "if (password.value == \"\") {" + END;
+            Result += TAB2 + "alert(\"Please input Password\");" + END;
+            Result += TAB2 + "return false;" + END;
+            Result += TAB + "}" + END;
+
+            Result += TAB + "var email = document.getElementsByName(\"" + GlobalVariables.g_sTableNguoiDung + "_Email" + "\").item(0);" + END;
+            Result += TAB + "if (email.value == \"\") {" + END;
+            Result += TAB2 + "alert(\"Please input Email\");" + END;
+            Result += TAB2 + "return false;" + END;
+            Result += TAB + "}" + END;
+
+            Result += TAB + "return true;" + END;
+            Result += "}" + END;
+
+            return Result;
+        }
+
         public void GenerateViews(DataBase DB)
         {
             IBase _rep = null;

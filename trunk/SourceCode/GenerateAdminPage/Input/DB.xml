@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configs>
     <datasource>.\SQLEXPRESS</datasource>
-    <databasename>Paf80</databasename>
+    <databasename>ThanhTamSoft</databasename>
     <namespace>TemplateWeb</namespace>
     <usertablename>NguoiDung</usertablename>
     <superadmin>SuperAdmin</superadmin>
@@ -9,38 +9,90 @@
     <defaultguid>11112222-1111-1111-1111-111122223333</defaultguid>
     <noimages>noimages.jpg</noimages>
     <fck>
-        <item id="LoaiHinhThamDinhGia" attr="GioiThieu" />
-        <item id="CongTyThamDinhGia" attr="GioiThieu" />
-        <item id="PhapLy" attr="NoiDung" />
+        <item id="ThongTinWebsite" attr="GioiThieu" />
+        <item id="GoiThietKeWeb" attr="GioiThieu" />
+        <item id="DanhMucWeb" attr="GioiThieu" />
+		<item id="MauThietKe" attr="GioiThieu" />
+		<item id="PhanMemQuanLy" attr="GioiThieu" />
+		<item id="TinTuc" attr="NoiDung" />
+		<item id="ChuongTrinhKhuyenMai" attr="NoiDung" />
     </fck>
     <image>
-        <item id="LoaiHinhThamDinhGia" attr="HinhMinhHoa" />
-        <item id="CongTyThamDinhGia" attr="HinhMinhHoa" />
-        <item id="PhapLy" attr="HinhMinhHoa" />
+        <item id="ThongTinWebsite" attr="Banner" />
+		<item id="GoiThietKeWeb" attr="HinhMinhHoa" />
+		<item id="MauThietKe" attr="HinhMinhHoa" />
+		<item id="TinTuc" attr="HinhMinhHoa" />
+		<item id="PhanMemQuanLy" attr="HinhMinhHoa" />
+		<item id="QuangCao" attr="HinhMinhHoa" />
+		<item id="KhachHang" attr="HinhMinhHoa" />
+		<item id="Video" attr="HinhMinhHoa" />
+		<item id="Album" attr="HinhMinhHoa" />
     </image>
     <pkpaging>
-        <item>LoaiHinhThamDinhGia</item>
-        <item>CongTyThamDinhGia</item>
-        <item>PhapLy</item>
-        <item>GopY</item>
-        <item>SLM_Members</item>
+        <item>MauThietKe</item>
+		<item>PhanMemQuanLy</item>
+		<item>TinTuc</item>
+		<item>KhachHang</item>
+		<item>ChuongTrinhKhuyenMai</item>
+		<item>QuangCao</item>
+		<item>Album</item>
+		<item>Video</item>
+		<item>NguoiDung</item>
     </pkpaging>
     <fkpaging>
+		<item id="MauThietKe">
+            <fk>IDDanhMucWeb</fk>
+        </item>
+		<item id="TinTuc">
+            <fk>IDLoaiTinTuc</fk>
+        </item>
+		<item id="BinhLuanTinTuc">
+            <fk>IDTinTuc</fk>
+        </item>
+		<item id="QuangCao">
+            <fk>IDVungQuangCao</fk>
+        </item>
+		<item id="Album">
+            <fk>IDLoaiVideo</fk>
+        </item>
+		<item id="Video">
+            <fk>IDAlbum</fk>
+        </item>
+		<item id="BinhLuanVideo">
+            <fk>IDAlbum</fk>
+        </item>
+		<item id="PhanHoi">
+            <fk>IDCauHoi</fk>
+        </item>
     </fkpaging>
     <!-- using ajax when excute adding, removing, editing -->
     <ajax>
-        <item>LoaiHinhThamDinhGia</item>
-        <item>CongTyThamDinhGia</item>
-        <item>PhapLy</item>
-        <item>PhanHoi</item>
-        <item>HoTro</item>
-        <item>SLM_Members</item>
+        <item>GoiThietKeWeb</item>
+		<item>MauThietKe</item>
+		<item>TinTuc</item>
+		<item>KhachHang</item>
+		<item>PhanMemQuanLy</item>
+		<item>QuangCao</item>
+		<item>ChuongTrinhKhuyenMai</item>
+		<item>Video</item>
+		<item>NguoiDung</item>
+		<item>HopThu</item>
+		<item>PhanHoi</item>
+		<item>ThongTinWebsite</item>
     </ajax>
     <detail>
-        <item>LoaiHinhThamDinhGia</item>
-        <item>CongTyThamDinhGia</item>
-        <item>PhapLy</item>
-        <item>GopY</item>
-        <item>SLM_Members</item>
+        <item>ThongTinWebsite</item>
+		<item>GoiThietKeWeb</item>
+		<item>DanhMucWeb</item>
+		<item>MauThietKe</item>
+		<item>PhanMemQuanLy</item>
+		<item>TinTuc</item>
+		<item>KhachHang</item>
+		<item>ChuongTrinhKhuyenMai</item>
+		<item>QuangCao</item>
+		<item>Album</item>
+		<item>Video</item>
+		<item>HopThu</item>
+		<item>NguoiDung</item>
     </detail>
 </configs>
