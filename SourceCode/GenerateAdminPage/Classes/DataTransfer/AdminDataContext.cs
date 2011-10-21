@@ -154,6 +154,8 @@ namespace GenerateAdminPage.Classes
         {
             for (int i = 0; i < DB.Tables.Count; i++)
             {
+                Console.WriteLine("Set foreign keys for table " + DB.Tables[i].Name);
+
                 Table table = DB.Tables[i];
 
                 Microsoft.SqlServer.Management.Smo.Database db;

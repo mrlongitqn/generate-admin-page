@@ -230,7 +230,7 @@ namespace GenerateAdminPage.Classes
             }
 
             Result += TAB3 + "<td>" + END;
-            Result += TAB4 + "<a href=\"#\" onclick=\"submitForm(event)\">" + END;
+            Result += TAB4 + "<a href=\"#\" onclick=\"submitForm()\">" + END;
             Result += TAB5 + "<span style=\"color: Blue; text-decoration: underline\">Update</span>" + END;
             Result += TAB4 + "</a>" + END;
             Result += TAB4 + "&nbsp;" + END;
@@ -367,7 +367,10 @@ namespace GenerateAdminPage.Classes
             Result += "<asp:Content ID=\"Content2\" ContentPlaceHolderID=\"MainContent1\" runat=\"server\">" + END;
             Result += TAB + "<span class=\"AdminTitle\" style=\"color:#cc0000;\">" + GlobalVariables.g_sTableNguoiDung + " Management</span>" + END;
             Result += TAB + "(<a href=\"<%= Url.Action(\"Index\", \"Home\") %>\" class=\"AdminPageText\">" + END;
-            Result += TAB + "<%= WebConfiguration.SiteName  %>" + END;
+            Result += TAB2 + "<%= WebConfiguration.SiteName  %>" + END;
+            Result += TAB + "</a>|" + END;
+            Result += TAB + "<a href=\"<%= Url.Action(\"LogOff\", \"Account\") %>\" class=\"AdminPageText\">" + END;
+            Result += TAB2 + "LogOut" + END;
             Result += TAB + "</a>)" + END;
             Result += TAB + "<br />" + END;
             Result += "</asp:Content>" + END;
